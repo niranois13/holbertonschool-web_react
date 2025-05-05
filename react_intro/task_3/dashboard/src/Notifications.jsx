@@ -1,6 +1,6 @@
 import React from 'react';
 import './Notifications.css';
-import closeIcon from './assets/close-button.png';
+import closeIcon from './assets/close-icon.png';
 import { getLatestNotification } from './utils'; 
 
 export default function Notifications() {
