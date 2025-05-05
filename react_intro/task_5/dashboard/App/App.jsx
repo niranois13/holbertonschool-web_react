@@ -1,5 +1,5 @@
 import './App.css'
-import logo from '../src/assets/holberton-logo.jpg';
+import logo from '../assets/holberton-logo.jpg';
 import { getCurrentYear, getFooterCopy } from '../utils/utils';
 import Notifications from '../Notifications/Notifications';
 
