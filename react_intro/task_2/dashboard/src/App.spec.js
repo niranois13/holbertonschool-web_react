@@ -18,3 +18,20 @@ test('renders an img element', () => {
   const img = screen.getByRole('img', { name: /holberton logo/i });
   expect(img).toBeInTheDocument();
 });
+
+test('renders 2 labels in App-body', () => {
+  render(<App />);
+  expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+  expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
+});
+
+test('renders 2 inputs in App-body', () => {
+  render(<App />);
+  expect(screen.getByLabelText(/email/i, {selector: 'input'})).toBeInTheDocument();
+  expect(screen.getByLabelText(/password/i, {selector: 'input'})).toBeInTheDocument();
+});
+
+test('renders a button in App-body', () => {
+  render(<App />);
+  expect(screen.getByRole(/button/i, { name: 'OK' })).toBeInTheDocument();
+});
