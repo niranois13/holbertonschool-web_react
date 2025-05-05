@@ -1,13 +1,13 @@
 import React from 'react';
 import './Notifications.css';
 import closeIcon from './assets/close-icon.png';
-import { getLatestNotification } from './utils'; 
+import { getLatestNotification } from './utils';
 
 export default function Notifications() {
     const handleClick = () => {
         console.log('Close button has been clicked');
     };
-    
+
     return (
         <div className="notifications">
             <button
@@ -22,12 +22,7 @@ export default function Notifications() {
                     cursor: 'pointer'
                 }}
             >
-                <img
-                    src={closeIcon}
-                    alt="close icon"
-                    style={{ width: '10px', height: '10px' }}
-                />
-
+                <img src={closeIcon} alt="close icon" style={{ width: '10px', height: '10px' }} />
             </button>
 
             <p>Here is the list of notifications</p>
@@ -37,9 +32,7 @@ export default function Notifications() {
                 <li data-priority="urgent">New resume available</li>
                 <li
                     data-priority="urgent"
-                    dangerouslySetInnerHTML={
-                        { __html: getLatestNotification() }
-                    }
+                    dangerouslySetInnerHTML={{ __html: getLatestNotification() }}
                 ></li>
             </ul>
         </div>

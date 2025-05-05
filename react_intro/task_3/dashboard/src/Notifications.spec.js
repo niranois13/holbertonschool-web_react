@@ -18,11 +18,11 @@ describe('Notifications component', () => {
   test('renders 3 list items', () => {
     render(<Notifications />);
     const listItems = screen.getAllByRole('listitem');
-    expect(listItems).toHaveLength(3);
+    expect(listItems.length).toBe(3);
   });
 
   test('logs message when close button is clicked', () => {
-    console.log = jest.fn();
+    console.log = jest.fn(); // on espionne console.log
     render(<Notifications />);
     const closeButton = screen.getByRole('button', { name: /close/i });
     fireEvent.click(closeButton);
