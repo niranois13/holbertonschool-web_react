@@ -18,7 +18,7 @@ describe('Notifications component', () => {
   test('renders 3 list items', () => {
     render(<Notifications />);
     const listItems = screen.getAllByRole('listitem');
-    expect(listItems.length).toHaveLength(3);
+    expect(listItems.length).toBe(3);
   });
 
   test('logs message when close button is clicked', () => {
@@ -26,6 +26,6 @@ describe('Notifications component', () => {
     render(<Notifications />);
     const closeButton = screen.getByRole('button', { name: /close/i });
     fireEvent.click(closeButton);
-    expect(console.log).toHaveBeenCalledWith(/Close button has been clicked/i);
+    expect(console.log).toHaveBeenCalledWith('Close button has been clicked');
   });
 });
