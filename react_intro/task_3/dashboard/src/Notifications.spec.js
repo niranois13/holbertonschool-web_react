@@ -18,7 +18,7 @@ describe('Notifications component', () => {
   test('renders 3 list items', () => {
     render(<Notifications />);
     const listItems = screen.getAllByRole('listitem');
-    expect(listItems.length).toBe(3);
+    expect(listItems.length).toHaveLength(3);
   });
 
   test('logs message when close button is clicked', () => {
