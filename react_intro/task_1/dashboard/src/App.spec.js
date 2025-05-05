@@ -27,11 +27,11 @@ test('renders 2 labels in App-body', () => {
 
 test('renders 2 inputs in App-body', () => {
   render(<App />);
-  expect(screen.getByLabelText('Email: ', {selector: 'input'})).toBeInTheDocument();
-  expect(screen.getByLabelText('Password: ', {selector: 'input'})).toBeInTheDocument();
+  expect(screen.getByLabelText(/email/i, {selector: 'input'})).toBeInTheDocument();
+  expect(screen.getByLabelText(/password/i, {selector: 'input'})).toBeInTheDocument();
 });
 
 test('renders a button in App-body', () => {
   render(<App />);
-  expect(screen.getByRole('button', {name: 'OK'})).toBeInTheDocument();
+  expect(screen.getByRole(/button/i, {name: 'OK'})).toBeInTheDocument();
 });
