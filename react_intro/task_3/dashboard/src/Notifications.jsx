@@ -33,7 +33,7 @@ export default function Notifications() {
                 <li
                     data-priority="urgent"
                     dangerouslySetInnerHTML={{ __html: getLatestNotification() }}
-                ></li>
+                />
             </ul>
         </div>
     );
