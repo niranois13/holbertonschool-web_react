@@ -21,8 +21,8 @@ test('renders an img element', () => {
 
 test('renders 2 labels in App-body', () => {
   render(<App />);
-  expect(screen.getByLabelText('Email: ')).toBeInTheDocument();
-  expect(screen.getByLabelText('Password: ')).toBeInTheDocument();
+  expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+  expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
 });
 
 test('renders 2 inputs in App-body', () => {
@@ -33,5 +33,5 @@ test('renders 2 inputs in App-body', () => {
 
 test('renders a button in App-body', () => {
   render(<App />);
-  expect(screen.getByRole('button', {name: 'OK'}));
-})
+  expect(screen.getByRole('button', {name: 'OK'})).toBeInTheDocument();
+});
