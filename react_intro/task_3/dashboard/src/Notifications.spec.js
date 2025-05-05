@@ -22,7 +22,7 @@ describe('Notifications component', () => {
   });
 
   test('logs message when close button is clicked', () => {
-    console.log = jest.fn(); // on espionne console.log
+    console.log = jest.fn();
     render(<Notifications />);
     const closeButton = screen.getByRole('button', { name: /close/i });
     fireEvent.click(closeButton);
