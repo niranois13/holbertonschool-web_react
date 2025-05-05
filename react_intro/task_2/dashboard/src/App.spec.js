@@ -19,12 +19,18 @@ test('renders an img element', () => {
   expect(img).toBeInTheDocument();
 });
 
-test('renders 2 labels and matching inputs in App-body', () => {
+test('renders two inputs in App-body', () => {
   render(<App />);
-  const emailLabel = screen.getByLabelText(/email/i);
-  const passwordLabel = screen.getByLabelText(/password/i);
-  expect(emailLabel).toBeInTheDocument();
-  expect(passwordLabel).toBeInTheDocument();
+  const emailInput = screen.getByLabelText(/email/i);
+  const passwordInput = screen.getByLabelText(/password/i);
+  expect(emailInput).toBeInTheDocument();
+  expect(passwordInput).toBeInTheDocument();
+});
+
+test('renders two label elements with Email and Password', () => {
+  render(<App />);
+  expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+  expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
 });
 
 test('renders a button in App-body', () => {
