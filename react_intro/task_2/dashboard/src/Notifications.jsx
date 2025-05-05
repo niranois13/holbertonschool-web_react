@@ -1,6 +1,12 @@
 import React from 'react';
+import closeIcon from './assets/close-icon.png';
+import { getLatestNotification } from './utils'; 
 
-function Notifications() {
+export default function Notifications() {
+    const handleClick = () => {
+        console.log('Close button has been clicked');
+    };
+    
     return (
         <div className="notifications">
             <button
@@ -38,5 +44,3 @@ function Notifications() {
         </div>
     );
 }
-
-export default Notifications;
