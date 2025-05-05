@@ -29,8 +29,5 @@ export default [
         { allowConstantExport: true },
       ],
     },
-    "env": {
-    "jest/globals": true
-  }
-},
+  },
 ]
