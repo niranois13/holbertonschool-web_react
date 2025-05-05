@@ -1,0 +1,48 @@
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  --hbtn-red: #e1003c;
+}
+
+.App-header {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  border-bottom: 3px solid var(--hbtn-red);
+  min-height: 20vh;
+}
+
+.App-header img {
+  max-width: 100%;
+  max-height: 250px;
+}
+
+.App-header h1 {
+  color: var(--hbtn-red);
+  font-family: sans-serif;
+  font-size: 3rem;
+  font-weight: bold;
+}
+
+.App-body {
+  min-height: 55vh;
+}
+
+.App-body p {
+  padding: 20px;
+}
+
+.App-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-top: 3px solid var(--hbtn-red);
+  min-height: 5vh;
+}
+
+.App-footer p {
+  font-family: sans-serif;
+  font-style: italic;
+  font-size: 0.9rem;
+}
