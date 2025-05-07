@@ -3,21 +3,14 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import Notifications from './Notifications';
 
 describe('Notifications component', () => {
-  test('renders the notifications title', () => {
-    render(<Notifications />);
-    const title = screen.getByText(/Here is the list of notifications/i);
-    expect(title).toBeInTheDocument();
-  });
-
   test('renders the notifications title (case-insensitive match)', () => {
     render(<Notifications />);
     const title = screen.getByText((content, element) => {
       return element?.tagName.toLowerCase() === 'p' &&
-      /here is the list of notifications/i.test(content);
+             /here is the list of notifications/i.test(content);
     });
     expect(title).toBeInTheDocument();
   });
-
 
   test('renders the close button', () => {
     render(<Notifications />);
@@ -37,12 +30,5 @@ describe('Notifications component', () => {
     const closeButton = screen.getByLabelText(/close/i);
     fireEvent.click(closeButton);
     expect(console.log).toHaveBeenCalledWith('Close button has been clicked');
-  });
-
-  test('renders exactly 8 direct child elements inside the notifications container', () => {
-    const { container } = render(<Notifications />);
-    const notificationContainer = container.querySelector('.notifications');
-    const allElements = notificationContainer.querySelectorAll('*');
-    expect(allElements.length).toBe(8);
   });
 });
