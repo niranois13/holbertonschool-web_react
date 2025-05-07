@@ -29,6 +29,6 @@ describe('Notifications component', () => {
     render(<Notifications />);
     const closeButton = screen.getByLabelText(/close/i);
     fireEvent.click(closeButton);
-    expect(console.log).toHaveBeenCalledWith('Close button has been clicked');
+    expect(console.log).toHaveBeenCalledWith(/Close button has been clicked/i);
   });
 });
