@@ -7,7 +7,7 @@ describe('Notifications component', () => {
     render(<Notifications />);
     const title = screen.getByText((content, element) => {
       return element?.tagName.toLowerCase() === 'p' &&
-             /here is the list of notifications/i.test(content);
+        /here is the list of notifications/i.test(content);
     });
     expect(title).toBeInTheDocument();
   });
@@ -24,15 +24,18 @@ describe('Notifications component', () => {
     expect(listItems.length).toBe(3);
   });
 
-  test('logs message when close button is clicked (case-insensitive)', () => {
+  test('logs message when close button is clicked (case-insensitive, with props)', () => {
     console.log = jest.fn();
-    render(<Notifications />);
-    const closeButton = screen.getByLabelText(/close/i);
+
+    render(<Notifications listNotifications={ mockNotifications } />);
+    const closeButton = screen.getByRole('button', { name: /close/i });
+
     fireEvent.click(closeButton);
 
     expect(console.log).toHaveBeenCalled();
-    const loggedArg = console.log.mock.calls[0][0];
-    expect(loggedArg).toMatch(/close button has been clicked/i);
+    const loggedMessage = console.log.mock.calls[0][0];
+    expect(loggedMessage).toMatch(/close button has been clicked/i);
   });
+
 
 });
