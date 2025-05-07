@@ -28,4 +28,11 @@ describe('Notifications component', () => {
     fireEvent.click(closeButton);
     expect(console.log).toHaveBeenCalledWith('Close button has been clicked');
   });
+
+  test('renders exactly 8 direct child elements inside the notifications container', () => {
+      const { container } = render(<Notifications />);
+      const notificationContainer = container.querySelector('.notifications');
+      const allElements = notificationContainer.querySelectorAll('*');
+      expect(allElements.length).toBe(8);
+  });
 });
