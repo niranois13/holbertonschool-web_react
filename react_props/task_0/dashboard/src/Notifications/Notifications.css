@@ -1,0 +1,29 @@
+.notifications {
+    border: 2px dashed #e1484c;
+    padding: 10px;
+    margin: 10px;
+    position: relative;
+}
+
+.notifications p {
+    margin: 0 0 10px 0;
+}
+
+.notifications ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.notifications li[data-priority="default"] {
+    color: blue;
+}
+
+.notifications li[data-priority="urgent"] {
+    color: red;
+}
+
+.notifications button img {
+    width: 10px;
+    height: 10px;
+}
