@@ -24,11 +24,15 @@ describe('Notifications component', () => {
     expect(listItems.length).toBe(3);
   });
 
-  test('logs message when close button is clicked', () => {
+  test('logs message when close button is clicked (case-insensitive)', () => {
     console.log = jest.fn();
     render(<Notifications />);
     const closeButton = screen.getByLabelText(/close/i);
     fireEvent.click(closeButton);
-    expect(console.log).toHaveBeenCalledWith(/Close button has been clicked/i);
+
+    expect(console.log).toHaveBeenCalled();
+    const loggedArg = console.log.mock.calls[0][0];
+    expect(loggedArg).toMatch(/close button has been clicked/i);
   });
+
 });
