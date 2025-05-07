@@ -11,7 +11,7 @@ describe('Notifications component', () => {
 
   test('renders the close button', () => {
     render(<Notifications />);
-    const closeButton = screen.getByRole('button', { name: /close/i });
+    const closeButton = screen.getByLabelText(/close/i);
     expect(closeButton).toBeInTheDocument();
   });
 
@@ -24,7 +24,7 @@ describe('Notifications component', () => {
   test('logs message when close button is clicked', () => {
     console.log = jest.fn();
     render(<Notifications />);
-    const closeButton = screen.getByRole('button', { name: /close/i });
+    const closeButton = screen.getByLabelText(/close/i);
     fireEvent.click(closeButton);
     expect(console.log).toHaveBeenCalledWith('Close button has been clicked');
   });
