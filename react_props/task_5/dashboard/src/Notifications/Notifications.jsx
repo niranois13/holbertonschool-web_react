@@ -4,14 +4,14 @@ import NotificationItem from './NotificationItem';
 
 export default function Notifications({ notifications = [], displayDrawer = false }) {
     return (
-        <>
+        <React.Fragment>
             <div className='notifications-title'>
                 <p>Your notifications</p>
             </div>
             {displayDrawer && (
                 <div className="notifications">
                     {notifications.length > 0 ? (
-                        <>
+                        <React.Fragment>
                             <p>Here is the list of notifications</p>
                             <button
                                 onClick={() => console.log('Close button has been clicked')} aria-label="Close">
@@ -26,12 +26,12 @@ export default function Notifications({ notifications = [], displayDrawer = fals
                                         html={notification.html} />
                                 ))}
                             </ul>
-                        </>
+                        </React.Fragment>
                     ) : (
                         <p>No new notification for now</p>
                     )}
                 </div>
             )}
-        </>
+        </React.Fragment>
     );
 }

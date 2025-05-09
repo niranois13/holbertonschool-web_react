@@ -5,6 +5,7 @@ import Login from '../Login/Login';
 import Footer from '../Footer/Footer';
 import CourseList from '../CourseList/CourseList';
 import { getLatestNotification } from '../utils/utils'
+import React from 'react';
 
 function App() {
   const isLoggedIn = false;
@@ -22,7 +23,7 @@ function App() {
   ];
 
   return (
-    <>
+    <React.Fragment>
       <div className="root-notifications">
         <Notifications notifications={notificationsList} displayDrawer={true}/>
       </div>
@@ -30,7 +31,7 @@ function App() {
       <Header />
       {isLoggedIn ? <CourseList courses={coursesList} /> : <Login />}
       <Footer />
-    </>
+    </React.Fragment>
   )
 }
 

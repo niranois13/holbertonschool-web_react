@@ -7,10 +7,10 @@ return (
 			textSecondCell === null ? (
 				<th colSpan="2">{textFirstCell}</th>
 			) : (
-				<>
+				<React.Fragment>
 					<th style={{ width: '70%'}}>{textFirstCell}</th>
 					<th>{textSecondCell}</th>
-				</>
+				</React.Fragment>
 			)
 		) : (
 			<>
