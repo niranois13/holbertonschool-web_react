@@ -47,3 +47,11 @@
   font-style: italic;
   font-size: 0.9rem;
 }
+
+.root-notifications {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 1000;
+  max-width: 300px;
+}
