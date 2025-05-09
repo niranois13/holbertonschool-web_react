@@ -9,50 +9,64 @@ describe('Notifications Component Behavior', () => {
     { id: 3, type: 'urgent', html: { __html: getLatestNotification() } },
   ];
 
-  test('Always renders "Your notifications" title', () => {
+  test('Always renders the "Your notifications" title (case-insensitive)', () => {
     render(<Notifications notifications={mockNotifications} displayDrawer={false} />);
     expect(screen.getByText(/your notifications/i)).toBeInTheDocument();
   });
 
   describe('When displayDrawer is false', () => {
-    test('Does not render notification items, list text, or button', () => {
+    test('Does not render the list, list items, or close button', () => {
       render(<Notifications notifications={mockNotifications} displayDrawer={false} />);
       expect(screen.queryByText(/here is the list of notifications/i)).not.toBeInTheDocument();
+      expect(screen.queryByRole('list')).not.toBeInTheDocument();
       expect(screen.queryAllByRole('listitem')).toHaveLength(0);
       expect(screen.queryByRole('button')).not.toBeInTheDocument();
+    });
+
+    test('Does NOT render "No new notification for now" even if notifications is empty', () => {
+      render(<Notifications notifications={[]} displayDrawer={false} />);
+      expect(screen.queryByText(/no new notification for now/i)).not.toBeInTheDocument();
     });
   });
 
   describe('When displayDrawer is true and notifications are present', () => {
-    test('Renders list text, notifications, and button', () => {
+    test('Renders list header, all notification items, and close button', () => {
       render(<Notifications notifications={mockNotifications} displayDrawer={true} />);
       expect(screen.getByText(/here is the list of notifications/i)).toBeInTheDocument();
       expect(screen.getAllByRole('listitem')).toHaveLength(3);
-      expect(screen.getByRole('button')).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /close/i })).toBeInTheDocument();
     });
 
-    test('Logs message when close button is clicked', () => {
+    test('Clicking close button logs expected message', () => {
+      const originalLog = console.log;
       console.log = jest.fn();
+
       render(<Notifications notifications={mockNotifications} displayDrawer={true} />);
-      const button = screen.getByRole('button', { name: /close/i });
-      fireEvent.click(button);
-      expect(console.log).toHaveBeenCalled();
-      const loggedMessage = console.log.mock.calls[0][0];
-      expect(loggedMessage).toMatch(/close button has been clicked/i);
+      fireEvent.click(screen.getByRole('button', { name: /close/i }));
+
+      expect(console.log).toHaveBeenCalledWith(expect.stringMatching(/close button has been clicked/i));
+
+      console.log = originalLog;
     });
   });
 
-  describe('When displayDrawer is true and notifications is an empty array', () => {
+  describe('When displayDrawer is true and notifications array is empty', () => {
     test('Displays "No new notification for now"', () => {
       render(<Notifications notifications={[]} displayDrawer={true} />);
-      expect(screen.getByText(/No new notification for now/i)).toBeInTheDocument();
+      expect(screen.getByText(/no new notification for now/i)).toBeInTheDocument();
     });
   });
 
-  describe('When displayDrawer is false and notifications is empty', () => {
-    test('Does NOT render "No new notification for now"', () => {
-      render(<Notifications notifications={[]} displayDrawer={false} />);
-      expect(screen.queryByText(/No new notification for now/i)).not.toBeInTheDocument();
+  describe('When props are omitted or partially missing', () => {
+    test('Renders safely with no props (uses defaults)', () => {
+      render(<Notifications />);
+      expect(screen.getByText(/your notifications/i)).toBeInTheDocument();
+      expect(screen.queryByText(/here is the list/i)).not.toBeInTheDocument();
+    });
+
+    test('Renders safely when only displayDrawer is true and notifications is undefined', () => {
+      render(<Notifications displayDrawer={true} />);
+      expect(screen.getByText(/no new notification for now/i)).toBeInTheDocument();
     });
   });
 });
