@@ -2,7 +2,11 @@
     border: 2px dashed #e1484c;
     padding: 10px;
     margin: 10px;
-    position: relative;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    max-width: 300px;
 }
 
 .notifications p {
