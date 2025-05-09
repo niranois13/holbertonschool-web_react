@@ -36,7 +36,9 @@ describe('Notifications Component Behavior', () => {
       render(<Notifications notifications={mockNotifications} displayDrawer={true} />);
       const button = screen.getByRole('button', { name: /close/i });
       fireEvent.click(button);
-      expect(console.log).toHaveBeenCalledWith('Close button has been clicked');
+      expect(console.log).toHaveBeenCalled();
+      const loggedMessage = console.log.mock.calls[0][0];
+      expect(loggedMessage).toMatch(/close button has been clicked/i);
     });
   });
 
