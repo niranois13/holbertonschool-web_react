@@ -11,7 +11,7 @@ export default function Notifications({ notifications, displayDrawer = true }) {
             {displayDrawer ? (
                 <div className="notifications">
                     {notifications.length > 0 ? (
-                        <>
+                        <div>
                             <p>Here is the list of notifications</p>
                             <button
                                 onClick={() => console.log('Close button has been clicked')} aria-label="Close">
@@ -26,7 +26,7 @@ export default function Notifications({ notifications, displayDrawer = true }) {
                                         html={notification.html} />
                                 ))}
                             </ul>
-                        </>
+                        </div>
                     ) : (
                         <p>No new notification for now</p>
                     )}
