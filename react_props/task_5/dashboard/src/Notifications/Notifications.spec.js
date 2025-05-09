@@ -48,4 +48,11 @@ describe('Notifications Component Behavior', () => {
       expect(screen.getByText("No new notification for now")).toBeInTheDocument();
     });
   });
+
+  describe('When displayDrawer is false and notifications is empty', () => {
+    test('Does NOT render "No new notification for now"', () => {
+      render(<Notifications notifications={[]} displayDrawer={false} />);
+      expect(screen.queryByText("No new notification for now")).not.toBeInTheDocument();
+    });
+  });
 });
