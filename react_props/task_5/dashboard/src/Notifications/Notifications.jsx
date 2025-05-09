@@ -2,16 +2,16 @@ import './Notifications.css'
 import closebtn from '../assets/close-button.png'
 import NotificationItem from './NotificationItem';
 
-export default function Notifications({ notifications, displayDrawer = true }) {
+export default function Notifications({ notifications, displayDrawer = false }) {
     return (
         <>
             <div className='notifications-title'>
                 <p>Your notifications</p>
             </div>
-            {displayDrawer ? (
+            {displayDrawer && (
                 <div className="notifications">
                     {notifications.length > 0 ? (
-                        <div>
+                        <>
                             <p>Here is the list of notifications</p>
                             <button
                                 onClick={() => console.log('Close button has been clicked')} aria-label="Close">
@@ -26,13 +26,11 @@ export default function Notifications({ notifications, displayDrawer = true }) {
                                         html={notification.html} />
                                 ))}
                             </ul>
-                        </div>
+                        </>
                     ) : (
                         <p>No new notification for now</p>
                     )}
                 </div>
-            ) : (
-                <></>
             )}
         </>
     );
