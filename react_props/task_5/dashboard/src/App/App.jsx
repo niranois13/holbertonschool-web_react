@@ -25,7 +25,7 @@ function App() {
   return (
     <React.Fragment>
       <div className="root-notifications">
-        <Notifications notifications={notificationsList} displayDrawer={false}/>
+        <Notifications notifications={notificationsList} displayDrawer={true}/>
       </div>
 
       <Header />
