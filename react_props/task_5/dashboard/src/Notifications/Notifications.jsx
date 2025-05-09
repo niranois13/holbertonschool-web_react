@@ -1,6 +1,7 @@
 import './Notifications.css'
 import closebtn from '../assets/close-button.png'
 import NotificationItem from './NotificationItem';
+import React from 'react';
 
 export default function Notifications({ notifications = [], displayDrawer = false }) {
     return (

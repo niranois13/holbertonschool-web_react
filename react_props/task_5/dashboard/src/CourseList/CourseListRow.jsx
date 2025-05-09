@@ -13,10 +13,10 @@ return (
 				</React.Fragment>
 			)
 		) : (
-			<>
+			<React.Fragment>
 				<td>{textFirstCell}</td>
 				<td>{textSecondCell}</td>
-			</>
+			</React.Fragment>
 		)}
 	</tr>
 );
