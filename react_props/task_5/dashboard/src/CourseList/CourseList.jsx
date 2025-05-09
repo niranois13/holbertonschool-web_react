@@ -6,7 +6,7 @@ export default function CourseList({ courses=[] }) {
 	return (
 		<table id="CourseList">
 			{courses.length > 0 ? (
-				<React.Fragment>
+				<>
 					<thead>
 						<CourseListRow isHeader={true} textFirstCell="Available courses" />
 						<CourseListRow isHeader={true} textFirstCell="Course name" textSecondCell="Credit" />
@@ -20,7 +20,7 @@ export default function CourseList({ courses=[] }) {
 							/>
 						))}
 					</tbody>
-				</React.Fragment>
+				</>
 				) : (
 					<tbody>
 						<CourseListRow isHeader={true} textFirstCell="No course available yet" />

@@ -5,14 +5,14 @@ import React from 'react';
 
 export default function Notifications({ notifications = [], displayDrawer = false }) {
     return (
-        <React.Fragment>
+        <>
             <div className='notifications-title'>
                 <p>Your notifications</p>
             </div>
             {displayDrawer && (
                 <div className="notifications">
                     {notifications.length > 0 ? (
-                        <React.Fragment>
+                        <>
                         <div className="notifications-topContent">
                             <p>Here is the list of notifications</p>
                             <button
@@ -29,12 +29,12 @@ export default function Notifications({ notifications = [], displayDrawer = fals
                                         html={notification.html} />
                                 ))}
                             </ul>
-                        </React.Fragment>
+                        </>
                     ) : (
                         <p>No new notification for now</p>
                     )}
                 </div>
             )}
-        </React.Fragment>
+        </>
     );
 }

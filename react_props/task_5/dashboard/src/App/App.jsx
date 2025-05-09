@@ -23,7 +23,7 @@ function App() {
   ];
 
   return (
-    <React.Fragment>
+    <>
       <div className="root-notifications">
         <Notifications notifications={notificationsList} displayDrawer={true}/>
       </div>
@@ -31,7 +31,7 @@ function App() {
       <Header />
       {isLoggedIn ? <CourseList courses={coursesList} /> : <Login />}
       <Footer />
-    </React.Fragment>
+    </>
   )
 }
 
