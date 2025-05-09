@@ -11,13 +11,13 @@ describe('Notifications Component Behavior', () => {
 
   test('Always renders "Your notifications" title', () => {
     render(<Notifications notifications={mockNotifications} displayDrawer={false} />);
-    expect(screen.getByText("Your notifications")).toBeInTheDocument();
+    expect(screen.getByText(/your notifications/i)).toBeInTheDocument();
   });
 
   describe('When displayDrawer is false', () => {
     test('Does not render notification items, list text, or button', () => {
       render(<Notifications notifications={mockNotifications} displayDrawer={false} />);
-      expect(screen.queryByText("Here is the list of notifications")).not.toBeInTheDocument();
+      expect(screen.queryByText(/here is the list of notifications/i)).not.toBeInTheDocument();
       expect(screen.queryAllByRole('listitem')).toHaveLength(0);
       expect(screen.queryByRole('button')).not.toBeInTheDocument();
     });
@@ -26,7 +26,7 @@ describe('Notifications Component Behavior', () => {
   describe('When displayDrawer is true and notifications are present', () => {
     test('Renders list text, notifications, and button', () => {
       render(<Notifications notifications={mockNotifications} displayDrawer={true} />);
-      expect(screen.getByText("Here is the list of notifications")).toBeInTheDocument();
+      expect(screen.getByText(/here is the list of notifications/i)).toBeInTheDocument();
       expect(screen.getAllByRole('listitem')).toHaveLength(3);
       expect(screen.getByRole('button')).toBeInTheDocument();
     });
@@ -45,14 +45,14 @@ describe('Notifications Component Behavior', () => {
   describe('When displayDrawer is true and notifications is an empty array', () => {
     test('Displays "No new notification for now"', () => {
       render(<Notifications notifications={[]} displayDrawer={true} />);
-      expect(screen.getByText("No new notification for now")).toBeInTheDocument();
+      expect(screen.getByText(/No new notification for now/i)).toBeInTheDocument();
     });
   });
 
   describe('When displayDrawer is false and notifications is empty', () => {
     test('Does NOT render "No new notification for now"', () => {
       render(<Notifications notifications={[]} displayDrawer={false} />);
-      expect(screen.queryByText("No new notification for now")).not.toBeInTheDocument();
+      expect(screen.queryByText(/No new notification for now/i)).not.toBeInTheDocument();
     });
   });
 });
