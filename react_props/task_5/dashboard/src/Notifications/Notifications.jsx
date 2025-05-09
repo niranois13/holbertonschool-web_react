@@ -13,11 +13,13 @@ export default function Notifications({ notifications = [], displayDrawer = fals
                 <div className="notifications">
                     {notifications.length > 0 ? (
                         <React.Fragment>
+                        <div className="notifications-topContent">
                             <p>Here is the list of notifications</p>
                             <button
                                 onClick={() => console.log('Close button has been clicked')} aria-label="Close">
                                 <img src={closebtn} alt='Close' />
                             </button>
+                        </div>
                             <ul>
                                 {notifications.map((notification) => (
                                     <NotificationItem
