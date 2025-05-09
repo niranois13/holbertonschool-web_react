@@ -24,7 +24,7 @@ function App() {
   return (
     <>
       <div className="root-notifications">
-        <Notifications notifications={notificationsList} />
+        <Notifications notifications={notificationsList} displayDrawer={true}/>
       </div>
 
       <Header />
