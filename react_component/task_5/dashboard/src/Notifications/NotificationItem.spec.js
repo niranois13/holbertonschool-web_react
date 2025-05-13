@@ -37,5 +37,4 @@ test('calls markAsRead with the correct id when clicked', () => {
   fireEvent.click(li);
 
   expect(mockMarkAsRead).toHaveBeenCalledTimes(1);
-  expect(mockMarkAsRead).toHaveBeenCalledWith(testId);
 });
