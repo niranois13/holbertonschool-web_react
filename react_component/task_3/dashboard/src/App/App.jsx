@@ -6,13 +6,15 @@ import Footer from '../Footer/Footer';
 import CourseList from '../CourseList/CourseList';
 import { getLatestNotification } from '../utils/utils';
 import React, { Component } from 'react';
+import BodySection from '../BodySection/BodySection';
+import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom';
 import PropTypes from 'prop-types';
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLoggedIn: false,
+      isLoggedIn: props.isLoggedIn || false,
       notificationsList: [
         { id: Math.floor(Math.random() * Date.now()), type: 'default', value: 'New course available' },
         { id: Math.floor(Math.random() * Date.now()), type: 'urgent', value: 'New resume available' },
@@ -53,7 +55,20 @@ class App extends Component {
         </div>
 
         <Header />
-        {isLoggedIn ? <CourseList courses={coursesList} /> : <Login />}
+        {isLoggedIn ? (
+          <BodySectionWithMarginBottom title="Course list">
+            <CourseList courses={coursesList} />
+          </BodySectionWithMarginBottom>
+        ) : (
+          <BodySectionWithMarginBottom title="Log in to continue">
+            <Login />
+          </BodySectionWithMarginBottom>
+        )}
+
+        <BodySection title="News from the School">
+          <p>Holberton School News goes here</p>
+        </BodySection>
+
         <Footer />
       </>
     );
@@ -62,10 +77,12 @@ class App extends Component {
 
 App.propTypes = {
   logOut: PropTypes.func,
+  isLoggedIn: PropTypes.bool,
 };
 
 App.defaultProps = {
   logOut: () => {},
+  isLoggedIn: false,
 };
 
 export default App;

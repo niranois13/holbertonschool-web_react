@@ -65,4 +65,24 @@ describe('App component', () => {
     expect(window.alert).toHaveBeenCalledWith(expect.stringMatching(/Logging you out/i));
     window.alert = originalAlert;
   });
+
+  test('displays "Course list" title when isLoggedIn is true', () => {
+    render(<App isLoggedIn={true} />);
+    const title = screen.queryByText(/course list/i);
+    expect(title).toBeInTheDocument();
+  });
+
+  test('displays "Log in to continue" title when isLoggedIn is false', () => {
+    render(<App />);
+    const loginTitle = screen.getByText(/log in to continue/i);
+    expect(loginTitle).toBeInTheDocument();
+  });
+
+  test('renders "News from the School" section with proper text', () => {
+    render(<App />);
+    const newsTitle = screen.getByText(/news from the school/i);
+    const newsContent = screen.getByText(/holberton school news goes here/i);
+    expect(newsTitle).toBeInTheDocument();
+    expect(newsContent).toBeInTheDocument();
+  });
 });
