@@ -82,10 +82,11 @@ describe('Notifications Component Behavior', () => {
 
   test('Notifications component does not re-render if the length of the notifications prop remains the same', () => {
     const { rerender } = render(<Notifications notifications={mockNotifications} displayDrawer={true} />);
-    const renderSpy = jest.fn(console.log)
-    console.log = renderSpy;
+    const originalLog = console.log;
+    console.log = jest.fn();
     rerender(<Notifications notifications={mockNotifications} displayDrawer={true} />);
-    expect(renderSpy).not.toHaveBeenCalled();
+    expect(console.log).not.toHaveBeenCalled();
+    console.log = originalLog;
   });
 
   test('Notifications component re-renders when the length of the notifications prop changes', () => {
