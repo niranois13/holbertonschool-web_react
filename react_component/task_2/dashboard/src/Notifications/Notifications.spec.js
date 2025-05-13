@@ -69,4 +69,17 @@ describe('Notifications Component Behavior', () => {
       expect(screen.getByText(/no new notification for now/i)).toBeInTheDocument();
     });
   });
+
+  test('Clicking a notification logs the correct markAsRead message (case-insensitive)', () => {
+    const originalLog = console.log;
+    console.log = jest.fn();
+    render(<Notifications notifications={mockNotifications} displayDrawer={true} />);
+
+    const firstNotification = screen.getByText(/new course available/i);
+    fireEvent.click(firstNotification);
+
+    expect(console.log).toHaveBeenCalledWith('Notification 1 has been marked as read');
+
+    console.log = originalLog;
+  });
 });
