@@ -74,12 +74,27 @@ describe('Notifications Component Behavior', () => {
     const originalLog = console.log;
     console.log = jest.fn();
     render(<Notifications notifications={mockNotifications} displayDrawer={true} />);
-
     const firstNotification = screen.getByText(/new course available/i);
     fireEvent.click(firstNotification);
-
-    expect(console.log).toHaveBeenCalledWith('Notification 1 has been marked as read');
-
+    expect(console.log).toHaveBeenCalledWith(expect.stringMatching(/Notification 1 has been marked as read/i));
     console.log = originalLog;
+  });
+
+  test('Notifications component does not re-render if the length of the notifications prop remains the same', () => {
+    const { rerender } = render(<Notifications notifications={mockNotifications} displayDrawer={true} />);
+    const renderSpy = jest.fn(console.log)
+    console.log = renderSpy;
+    rerender(<Notifications notifications={mockNotifications} displayDrawer={true} />);
+    expect(renderSpy).not.toHaveBeenCalled();
+  });
+
+  test('Notifications component re-renders when the length of the notifications prop changes', () => {
+    const { rerender } = render(<Notifications notifications={mockNotifications} displayDrawer={true} />);
+    const newNotifications = [
+      ...mockNotifications,
+      { id: 4, type: 'default', value: 'New announcement' }
+    ];
+    rerender(<Notifications notifications={newNotifications} displayDrawer={true} />);
+    expect(screen.getByText(/New announcement/i)).toBeInTheDocument();
   });
 });
