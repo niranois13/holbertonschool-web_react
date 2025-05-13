@@ -1,27 +1,41 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import NotificationItem from './NotificationItem';
+import NotificationItem from "./NotificationItem";
+import { render, screen, fireEvent } from "@testing-library/react";
+
+test('Check whether the li element has the color blue, and the the attribute data-notification-type set to default', () => {
+  render(<NotificationItem type="default" value="Test notification" />);
+  const li = screen.getByText('Test notification');
+
+  expect(li).toBeInTheDocument();
+  expect(li).toHaveAttribute('data-notification-type', 'default');
+  expect(li).toHaveStyle('color: blue');
+})
 
 
-test('Check whether the li element notification has the color blue when the type is set to be "defaut"', () => {
-  render(<NotificationItem type="default" />);
-  const liElement = screen.getByRole('listitem');
-  expect(liElement).toHaveStyle({ color: 'blue' });
-});
+test('Check whether the li element has the color red, and the the attribute data-notification-type set to urgent', () => {
+  render(<NotificationItem type="urgent" value="Test urgent notification" />);
+  const li = screen.getByText('Test urgent notification');
 
-test('Check whether the li element notification has the color red when the type is set to be "urgent"', () => {
-  render(<NotificationItem type="urgent" />);
-  const liElement = screen.getByRole('listitem');
-  expect(liElement).toHaveStyle({ color: 'red' });
-});
+  expect(li).toBeInTheDocument();
+  expect(li).toHaveAttribute('data-notification-type', 'urgent');
+  expect(li).toHaveStyle('color: red');
+})
 
-test('it should log to the console the "Notification id has been marked as read" with the correct notification item id', () => {
-  const mockMarkAsRead = jest.fn()
+test('calls markAsRead with the correct id when clicked', () => {
+  const mockMarkAsRead = jest.fn();
+  const testId = 42;
 
-  render(<NotificationItem markAsRead={mockMarkAsRead} />);
+  render(
+    <NotificationItem
+      id={testId}
+      type="default"
+      value="Clickable notification"
+      markAsRead={mockMarkAsRead}
+    />
+  );
 
-  const firstListItemElement = screen.getAllByRole('listitem')[0];
+  const li = screen.getByText('Clickable notification');
+  fireEvent.click(li);
 
-  fireEvent.click(firstListItemElement)
-
-  expect(mockMarkAsRead).toHaveBeenCalled()
+  expect(mockMarkAsRead).toHaveBeenCalledTimes(1);
+  expect(mockMarkAsRead).toHaveBeenCalledWith(testId);
 });
