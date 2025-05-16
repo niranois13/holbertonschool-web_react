@@ -10,7 +10,7 @@ class NotificationItem extends PureComponent {
 
         return (
             <li
-                className={css(styles.item, liClass)}
+                className={css(liClass)}
                 data-notification-type={type}
                 dangerouslySetInnerHTML={type === 'urgent' && html !== undefined ? html : undefined}
                 onClick={markAsRead}
@@ -33,22 +33,22 @@ NotificationItem.defaultProps = {
     markAsRead: () => { }
 };
 
-const baseItemStyle = {
-    width: '100%',
-    fontSize: '20px',
-    padding: '10px 8px',
-    borderBottom: '1px solid black',
-};
-
 const styles = StyleSheet.create({
-    item: {
-        ...baseItemStyle,
-    },
     default: {
         color: 'blue',
+        '@media (max-width: 900px)': {
+            width: '100%',
+            borderBottom: '2px solid black',
+            padding: '10px 8px',
+        },
     },
     urgent: {
         color: 'red',
+        '@media (max-width: 900px)': {
+            width: '100%',
+            borderBottom: '2px solid black',
+            padding: '10px 8px',
+        },
     },
 });
 

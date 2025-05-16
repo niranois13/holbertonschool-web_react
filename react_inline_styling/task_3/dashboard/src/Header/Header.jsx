@@ -21,10 +21,11 @@ const styles = StyleSheet.create({
         padding: '20px',
         color: hbtnRed,
         fontSize: '1.5rem',
+        height: '25vh',
     },
     logo: {
-        width: '200px',
-        height: 'auto',
+        maxWidth: '10vw',
+        maxHeight: 'auto',
         marginRight: '20px',
     },
     title: {

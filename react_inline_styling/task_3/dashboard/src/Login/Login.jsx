@@ -6,14 +6,14 @@ export default function Login() {
         <div className={css(styles.body)}>
             <p>Login to access the full dashboard</p>
             <div className={css(styles.loginForm)}>
-                <div className={css(styles.inputGroup)}>
-                    <label htmlFor="email">Email:</label>
+                <label htmlFor="email" >
+                    Email:
                     <input id="email" type="email" className={css(styles.input)} />
-                </div>
-                <div className={css(styles.inputGroup)}>
-                    <label htmlFor="password">Password:</label>
+                </label>
+                <label htmlFor="password">
+                    Password:
                     <input id="password" type="password" className={css(styles.input)} />
-                </div>
+                </label>
                 <button className={css(styles.button)}>OK</button>
             </div>
         </div>
@@ -29,23 +29,20 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         width: '300px',
         margin: 'auto',
-        '@media (max-width: 900px)': {
-            width: '100%',
-            padding: '0 1rem',
-        },
-    },
-    inputGroup: {
-        marginBottom: '1rem',
-        display: 'flex',
-        flexDirection: 'column',
     },
     input: {
-        padding: '0.5rem',
-        fontSize: '1rem',
+        marginBottom: '0.5rem',
+        display: 'block',
+        '@media (max-width: 900px)': {
+            all: 'unset',
+        },
     },
     button: {
-        padding: '0.5rem 1rem',
-        fontSize: '1rem',
-        alignSelf: 'flex-start',
+        '@media (max-width: 900px)': {
+            maxWidth: '50px',
+            maxHeight: '25px',
+            background: 'none',
+            border: '3px, solid, #f0bf77',
+        },
     },
 });
