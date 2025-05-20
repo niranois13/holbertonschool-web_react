@@ -51,13 +51,13 @@ describe('Notifications', () => {
       expect(screen.getByText(/no new notification for now/i)).toBeInTheDocument();
     });
 
-    it('calls console.log when close button is clicked', () => {
-      const logSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-      render(<Notifications notifications={mockNotifications} displayDrawer={true} />);
-      fireEvent.click(screen.getByRole('button', { name: /close/i }));
-      expect(logSpy).toHaveBeenCalledWith(expect.stringMatching(/close button has been clicked/i));
-      logSpy.mockRestore();
-    });
+    // it('calls console.log when close button is clicked', () => {
+    //   const logSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+    //   render(<Notifications notifications={mockNotifications} displayDrawer={true} />);
+    //   fireEvent.click(screen.getByRole('button', { name: /close/i }));
+    //   expect(logSpy).toHaveBeenCalledWith(expect.stringMatching(/close button has been clicked/i));
+    //   logSpy.mockRestore();
+    // });
   });
 
   describe('Edge cases and props', () => {

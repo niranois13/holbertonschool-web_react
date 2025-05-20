@@ -28,10 +28,10 @@ class Notifications extends Component {
                     <p>Here is the list of notifications</p>
                     <button
                         onClick={() => {
-                            console.log('Close button has been clicked');
                             this.props.handleHideDrawer();
                         }}
                         aria-label="Close"
+                        data-testId="close-btn"
                         className={css(styles.closeButton)}
                     >
                         <img
