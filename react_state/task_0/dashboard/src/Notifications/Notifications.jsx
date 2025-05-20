@@ -37,8 +37,6 @@ class Notifications extends Component {
                 >
                     <p
                         onClick={handleDisplayDrawer}
-                        role="button"
-                        onKeyDown={(e) => e.key === 'Enter' && handleDisplayDrawer()}
                     >Your notifications</p>
                 </div>
 
