@@ -18,21 +18,12 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLoggedIn: props.isLoggedIn || false,
       displayDrawer: false,
-      notificationsList: [
-        { id: Math.floor(Math.random() * Date.now()), type: 'default', value: 'New course available' },
-        { id: Math.floor(Math.random() * Date.now()), type: 'urgent', value: 'New resume available' },
-        { id: Math.floor(Math.random() * Date.now()), type: 'urgent', html: { __html: getLatestNotification() } },
-      ],
-      coursesList: [
-        { id: 1, name: 'ES6', credit: 60 },
-        { id: 2, name: 'Webpack', credit: 20 },
-        { id: 3, name: 'React', credit: 40 },
-      ],
     };
 
     this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.handleDisplayDrawer = this.handleDisplayDrawer.bind(this);
+    this.handleHideDrawer = this.handleHideDrawer.bind(this);
   }
 
   componentDidMount() {
@@ -59,14 +50,54 @@ class App extends Component {
   };
 
   render() {
-    const { isLoggedIn, notificationsList, coursesList } = this.state;
+    let {
+      isLoggedIn
+    } = this.props || false;
+
+    let {
+      displayDrawer
+    } = this.state;
+
+    let notificationsList = [
+      { 
+        id: Math.floor(Math.random() * Date.now()), 
+        type: 'default', 
+        value: 'New course available' 
+      },
+      { 
+        id: Math.floor(Math.random() * Date.now()), 
+        type: 'urgent', 
+        value: 'New resume available' },
+      { 
+        id: Math.floor(Math.random() * Date.now()), 
+        type: 'urgent', 
+        html: { __html: getLatestNotification() } },
+    ];
+
+    let coursesList = [
+      { 
+        id: 1, 
+        name: 'ES6', 
+        credit: 60 
+      },
+      { 
+        id: 2, 
+        name: 'Webpack', 
+        credit: 20 
+      },
+      { 
+        id: 3, 
+        name: 'React', 
+        credit: 40 
+      },
+    ];
 
     return (
       <div className={css(styles.app)}>
         <div className={css(styles.rootNotifications)}>
           <Notifications
             notifications={notificationsList}
-            displayDrawer={this.state.displayDrawer}
+            displayDrawer={displayDrawer}
             handleDisplayDrawer={this.handleDisplayDrawer}
             handleHideDrawer={this.handleHideDrawer}
           />
@@ -125,7 +156,6 @@ const styles = StyleSheet.create({
 
 App.propTypes = {
   logOut: PropTypes.func,
-  isLoggedIn: PropTypes.bool,
 };
 
 App.defaultProps = {
