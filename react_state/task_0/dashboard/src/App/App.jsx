@@ -99,6 +99,10 @@ class App extends Component {
 const hbtnRed = '#e1003c';
 
 const styles = StyleSheet.create({
+  body: {
+    margin: 0,
+    padding: 0,
+  },
   app: {
     height: '100%',
     margin: 0,
