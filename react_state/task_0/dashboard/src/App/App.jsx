@@ -1,185 +1,142 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { StyleSheet, css } from 'aphrodite';
+import Notifications from '../Notifications/Notifications';
 import Header from '../Header/Header';
 import Login from '../Login/Login';
 import Footer from '../Footer/Footer';
-import Notifications from '../Notifications/Notifications';
 import CourseList from '../CourseList/CourseList';
 import { getLatestNotification } from '../utils/utils';
-import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom';
 import BodySection from '../BodySection/BodySection';
+import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom';
 import WithLogging from '../HOC/WithLogging';
-import { StyleSheet, css } from 'aphrodite';
+
+const LoginWithLogging = WithLogging(Login);
+const CourseListWithLogging = WithLogging(CourseList);
+
+// Helper to generate a unique ID
+const generateId = () => Math.floor(Math.random() * Date.now());
+
+const coursesList = [
+  { id: 1, name: 'ES6', credit: 60 },
+  { id: 2, name: 'Webpack', credit: 20 },
+  { id: 3, name: 'React', credit: 40 },
+];
+
+const notificationsList = [
+  { id: generateId(), type: 'default', value: 'New course available' },
+  { id: generateId(), type: 'urgent', value: 'New resume available' },
+  { id: generateId(), type: 'urgent', html: { __html: getLatestNotification() } },
+];
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      displayDrawer: false,
-    };
-    this.ctrlHEventHandler = this.ctrlHEventHandler.bind(this);
-    this.handleDisplayDrawer = this.handleDisplayDrawer.bind(this);
-    this.handleHideDrawer = this.handleHideDrawer.bind(this);
+  state = {
+    isLoggedIn: this.props.isLoggedIn || false,
+    displayDrawer: false,
   };
 
-  handleDisplayDrawer() {
-    this.setState({
-      displayDrawer: true,
-    });
-  };
+  componentDidMount() {
+    document.addEventListener('keydown', this.handleKeyDown);
+    document.body.className = css(styles.body); // Apply body style
+  }
 
-  handleHideDrawer() {
-    this.setState({
-      displayDrawer: false,
-    });
-  };
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleKeyDown);
+  }
 
-  ctrlHEventHandler(e) {
-    let k = e.key;
-    if ((e.metaKey || e.ctrlKey) && k === 'h') {
-      e.preventDefault();
+  handleKeyDown = (e) => {
+    if (e.ctrlKey && e.key === 'h') {
       alert('Logging you out');
       this.props.logOut();
     }
   };
 
-  handleKeyPressDown() {
-    document.addEventListener("keydown", this.ctrlHEventHandler, false);
-  };
+  handleDisplayDrawer = () => this.setState({ displayDrawer: true });
+  handleHideDrawer = () => this.setState({ displayDrawer: false });
 
-  componentDidMount() {
-    this.handleKeyPressDown();
-  };
-
-  componentWillUnmount() {
-    document.removeEventListener("keydown", this.ctrlHEventHandler, false);
-  };
+  renderMainContent() {
+    return this.state.isLoggedIn ? (
+      <BodySectionWithMarginBottom title="Course list">
+        <CourseListWithLogging courses={coursesList} />
+      </BodySectionWithMarginBottom>
+    ) : (
+      <BodySectionWithMarginBottom title="Log in to continue">
+        <LoginWithLogging />
+      </BodySectionWithMarginBottom>
+    );
+  }
 
   render() {
-
-    let {
-      isLoggedIn,
-    } = this.props;
-
-    let {
-      displayDrawer
-    } = this.state;
-
-    let i = 0;
-    
-    let listNotifications = [
-      {
-        id: i++,
-        type: "default",
-        value: "New course available",
-      },
-      {
-        id: i++,
-        type: "urgent",
-        value: "New resume available",
-      },
-      {
-        id: i++,
-        type: "urgent",
-        html: {__html: getLatestNotification()},
-      }
-    ];
-
-    let listCourses = [
-      {
-        id: 1,
-        name: "ES6",
-        credit: 60,
-      },
-      {
-        id: 2,
-        name: "Webpack",
-        credit: 20,
-      },
-      {
-        id: 3,
-        name: "React",
-        credit: 40,
-      },
-    ];
+    const { displayDrawer } = this.state;
 
     return (
-      <Fragment>
-        <div className={css(styles.app)}>
-          <div className={css(styles.upperside)}>
-            <Notifications
-              listNotifications={listNotifications}
-              displayDrawer={displayDrawer}
-              handleDisplayDrawer={this.handleDisplayDrawer}
-              handleHideDrawer={this.handleHideDrawer}
-            />
-            <Header />
-          </div>
-          {
-            isLoggedIn === false &&
-            <BodySectionWithMarginBottom title="Log in to continue">
-              <Login />
-            </BodySectionWithMarginBottom>
-          }
-          {
-            isLoggedIn === true &&
-            <BodySectionWithMarginBottom title="Course list">
-              <CourseList listCourses={listCourses} />
-            </BodySectionWithMarginBottom>
-          }
-          <BodySection title="News from the school">
-            <p>
-              Labore ut consequat esse nostrud aute exercitation occaecat consequat ad cillum enim et est ex.
-               Qui proident veniam in aute magna occaecat.
-               Esse duis proident aliqua proident eu magna aliqua est exercitation.
-               Cupidatat ex eiusmod et commodo laborum veniam deserunt ad est excepteur cillum laborum.
-            </p>
-          </BodySection>
-          <Footer />
+      <div className={css(styles.app)}>
+        <div className={css(styles.rootNotifications)}>
+          <Notifications
+            notifications={notificationsList}
+            displayDrawer={displayDrawer}
+            handleDisplayDrawer={this.handleDisplayDrawer}
+            handleHideDrawer={this.handleHideDrawer}
+          />
         </div>
-      </Fragment>
-    );  
-  };
-};
+
+        <Header />
+
+        <div className={css(styles.appBody)}>
+          {this.renderMainContent()}
+          <BodySection title="News from the School">
+            <p>Holberton School News goes here</p>
+          </BodySection>
+        </div>
+
+        <Footer />
+      </div>
+    );
+  }
+}
+
+const hbtnRed = '#e1003c';
 
 const styles = StyleSheet.create({
+  body: {
+    margin: 0,
+    padding: 0,
+  },
   app: {
-    position: 'relative',
-    minHeight: '100vh',
+    height: '100%',
+    margin: 0,
+    padding: 0,
+    fontFamily: 'sans-serif',
   },
-  upperside: {
-    display: "flex",
-    flexDirection: "row-reverse",
-    width: "100%",
-    borderBottom: `3px solid var(--holberton-red)`,
-    justifyContent: "space-between",
-  }
-});
-
-const globalStyles = StyleSheet.create({
-  globals: {
-    ':root': {
-      '--holberton-red': '#e1484c',
-    },
-    'body': {
-      maxWidth: '90%',
-      margin: '0 auto',
-    },
-    'div': {
-      padding: '2px 8px',
-    },
+  rootNotifications: {
+    position: 'fixed',
+    top: '10px',
+    right: '10px',
+    zIndex: 1000,
+    maxWidth: '500px',
+  },
+  appBody: {
+    maxHeight: '75vh',
+  },
+  appFooter: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderTop: `3px solid ${hbtnRed}`,
+    height: '2dvh',
+    fontStyle: 'italic',
+    fontSize: '0.9rem',
   },
 });
-
-css(globalStyles.globals);
 
 App.propTypes = {
   logOut: PropTypes.func,
+  isLoggedIn: PropTypes.bool,
 };
 
 App.defaultProps = {
-  isLoggedIn: false,
   logOut: () => {},
+  isLoggedIn: false,
 };
 
 export default App;
