@@ -83,10 +83,6 @@ describe('Notifications', () => {
   });
 
   describe('Notifications interaction handlers', () => {
-    const mockNotifications = [
-      { id: 1, type: 'default', value: 'New course available' },
-    ];
-
     it('calls handleDisplayDrawer when "Your notifications" is clicked', () => {
       const handleDisplayDrawer = jest.fn(() => console.log('handleDisplayDrawer called'));
       render(
