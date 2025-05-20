@@ -88,7 +88,7 @@ describe('Notifications', () => {
     ];
 
     it('calls handleDisplayDrawer when "Your notifications" is clicked', () => {
-      const handleDisplayDrawer = jest.fn();
+      const handleDisplayDrawer = jest.fn(() => console.log('handleDisplayDrawer called'));
       render(
         <Notifications
           notifications={mockNotifications}
@@ -96,7 +96,6 @@ describe('Notifications', () => {
         />
       );
 
-      // Using the id we set
       const menuItem = screen.getByTestId('menuItem');
       expect(menuItem).toBeInTheDocument();
       fireEvent.click(menuItem);
@@ -104,7 +103,7 @@ describe('Notifications', () => {
     });
 
     it('calls handleHideDrawer when close button is clicked', () => {
-      const handleHideDrawer = jest.fn();
+      const handleHideDrawer = jest.fn(() => console.log('handleHideDrawer has been called'));
       render(
         <Notifications
           notifications={mockNotifications}
