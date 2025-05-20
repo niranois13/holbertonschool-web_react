@@ -31,7 +31,7 @@ class Notifications extends Component {
                             this.props.handleHideDrawer();
                         }}
                         aria-label="Close"
-                        data-testid="close-btn"
+                        id="close-btn"
                         className={css(styles.closeButton)}
                     >
                         <img
@@ -64,7 +64,7 @@ class Notifications extends Component {
             <>
                 <button 
                     className={css(styles.menuItem)} 
-                    data-testid="menuItem" 
+                    id="menuItem" 
                     onClick={handleDisplayDrawer}>
                     Your notifications
                 </button>
