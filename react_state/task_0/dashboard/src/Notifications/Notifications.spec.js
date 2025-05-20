@@ -50,7 +50,13 @@ describe('Notifications Component Behavior', () => {
       const originalLog = console.log;
       console.log = jest.fn();
 
-      render(<Notifications notifications={mockNotifications} displayDrawer={true} />);
+      render(
+        <Notifications
+          notifications={mockNotifications}
+          displayDrawer={true}
+          handleHideDrawer={() => { }}
+          handleDisplayDrawer={() => { }}
+        />);
       fireEvent.click(screen.getByRole('button', { name: /close/i }));
 
       expect(console.log).toHaveBeenCalledWith(expect.stringMatching(/close button has been clicked/i));

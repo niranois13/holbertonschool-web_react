@@ -4,13 +4,6 @@ import closebtn from '../assets/close-button.png';
 import NotificationItem from './NotificationItem';
 
 class Notifications extends Component {
-    static defaultProps = {
-        notifications: [],
-        displayDrawer: false,
-        handleDisplayDrawer: () => { },
-        handleHideDrawer: () => { },
-    };
-
     markAsRead = (id) => {
         console.log(`Notification ${id} has been marked as read`);
     };
