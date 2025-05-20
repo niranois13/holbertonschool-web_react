@@ -34,12 +34,12 @@ class Notifications extends Component {
             <>
                 <div
                     className={css(styles.notificationsTitle)}
-                    onClick={handleDisplayDrawer}
-                    role="button"
-                    tabIndex={0}
-                    onKeyDown={(e) => e.key === 'Enter' && handleDisplayDrawer()}
                 >
-                    <p>Your notifications</p>
+                    <p
+                        onClick={handleDisplayDrawer}
+                        role="button"
+                        onKeyDown={(e) => e.key === 'Enter' && handleDisplayDrawer()}
+                    >Your notifications</p>
                 </div>
 
                 {displayDrawer && (
