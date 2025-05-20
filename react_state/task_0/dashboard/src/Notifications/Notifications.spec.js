@@ -74,37 +74,57 @@ describe('Notifications', () => {
 
   describe('Interactions', () => {
     it('clicking a notification logs markAsRead message', () => {
-      const logSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+      const logSpy = jest.spyOn(console, 'log').mockImplementation(() => { });
       render(<Notifications notifications={mockNotifications} displayDrawer={true} />);
       fireEvent.click(screen.getByText(/new course available/i));
       expect(logSpy).toHaveBeenCalledWith(expect.stringMatching(/notification 1 has been marked as read/i));
       logSpy.mockRestore();
     });
+  });
 
-    it('clicking "Your notifications" calls handleDisplayDrawer', () => {
+  describe('Notifications interaction handlers', () => {
+    const mockNotifications = [
+      { id: 1, type: 'default', value: 'New course available' },
+    ];
+
+    it('calls handleDisplayDrawer when "Your notifications" is clicked', () => {
       const handleDisplayDrawer = jest.fn();
-      const { container } = render(
+      render(
         <Notifications
           notifications={mockNotifications}
           handleDisplayDrawer={handleDisplayDrawer}
         />
       );
-      const menuItemDiv = container.querySelector('#menuItem');
-      fireEvent.click(menuItemDiv);
-      expect(handleDisplayDrawer).toHaveBeenCalled();
+
+      // Using the id we set
+      const menuItem = screen.getByTestId('menuItem');
+      expect(menuItem).toBeInTheDocument();
+      fireEvent.click(menuItem);
+      expect(handleDisplayDrawer).toHaveBeenCalledTimes(1);
     });
 
-    it('clicking close button calls handleHideDrawer', () => {
+    it('calls handleHideDrawer when close button is clicked', () => {
       const handleHideDrawer = jest.fn();
-      render(<Notifications notifications={mockNotifications} displayDrawer={true} handleHideDrawer={handleHideDrawer} />);
-      fireEvent.click(screen.getByRole('button', { name: /close/i }));
-      expect(handleHideDrawer).toHaveBeenCalled();
+      render(
+        <Notifications
+          notifications={mockNotifications}
+          displayDrawer={true}
+          handleHideDrawer={handleHideDrawer}
+        />
+      );
+
+      const closeBtn = screen.getByTestId('close-btn');
+      expect(closeBtn).toBeInTheDocument();
+
+      fireEvent.click(closeBtn);
+      expect(handleHideDrawer).toHaveBeenCalledTimes(1);
     });
   });
 
+
   describe('Performance', () => {
     it('does not re-render when notifications length is unchanged', () => {
-      const logSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+      const logSpy = jest.spyOn(console, 'log').mockImplementation(() => { });
       const { rerender } = render(<Notifications notifications={mockNotifications} displayDrawer={true} />);
       rerender(<Notifications notifications={mockNotifications} displayDrawer={true} />);
       expect(logSpy).not.toHaveBeenCalled();
