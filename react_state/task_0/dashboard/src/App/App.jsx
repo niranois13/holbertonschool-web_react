@@ -19,7 +19,7 @@ class App extends Component {
     super(props);
     this.state = {
       isLoggedIn: props.isLoggedIn || false,
-      displayDrawer: false, // <= I declare displayDrawer as part of the state of the App.
+      displayDrawer: false,
       notificationsList: [
         { id: Math.floor(Math.random() * Date.now()), type: 'default', value: 'New course available' },
         { id: Math.floor(Math.random() * Date.now()), type: 'urgent', value: 'New resume available' },
@@ -33,8 +33,6 @@ class App extends Component {
     };
 
     this.handleKeyDown = this.handleKeyDown.bind(this);
-    this.handleDisplayDrawer = this.handleDisplayDrawer.bind(this);
-    this.handleHideDrawer = this.handleHideDrawer.bind(this);
   }
 
   componentDidMount() {
@@ -52,13 +50,13 @@ class App extends Component {
     }
   }
 
-  handleDisplayDrawer() {
+  handleDisplayDrawer = () => {
     this.setState({ displayDrawer: true });
-  }
+  };
 
-  handleHideDrawer() {
+  handleHideDrawer = () => {
     this.setState({ displayDrawer: false });
-  }
+  };
 
   render() {
     const { isLoggedIn, notificationsList, coursesList } = this.state;
@@ -68,7 +66,7 @@ class App extends Component {
         <div className={css(styles.rootNotifications)}>
           <Notifications
             notifications={notificationsList}
-            displayDrawer={this.state.displayDrawer} // Here is send displayDrawer to Notifications, as part of its state
+            displayDrawer={this.state.displayDrawer}
             handleDisplayDrawer={this.handleDisplayDrawer}
             handleHideDrawer={this.handleHideDrawer}
           />
