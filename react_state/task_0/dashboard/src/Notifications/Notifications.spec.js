@@ -83,8 +83,14 @@ describe('Notifications', () => {
 
     it('clicking "Your notifications" calls handleDisplayDrawer', () => {
       const handleDisplayDrawer = jest.fn();
-      render(<Notifications notifications={mockNotifications} handleDisplayDrawer={handleDisplayDrawer} />);
-      fireEvent.click(screen.getByText(/your notifications/i));
+      const { container } = render(
+        <Notifications
+          notifications={mockNotifications}
+          handleDisplayDrawer={handleDisplayDrawer}
+        />
+      );
+      const menuItemDiv = container.querySelector('#menuItem');
+      fireEvent.click(menuItemDiv);
       expect(handleDisplayDrawer).toHaveBeenCalled();
     });
 

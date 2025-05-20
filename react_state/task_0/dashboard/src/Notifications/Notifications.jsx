@@ -62,7 +62,7 @@ class Notifications extends Component {
 
         return (
             <>
-                <div className={css(styles.notificationsTitle)} role="button" onClick={handleDisplayDrawer}>
+                <div className={css(styles.menuItem)} id="menuItem" onClick={handleDisplayDrawer}>
                     <p>Your notifications</p>
                 </div>
 
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
             backgroundColor: 'white',
         },
     },
-    notificationsTitle: {
+    menuItem: {
         textAlign: 'end',
         marginRight: '10px',
         position: 'fixed',
