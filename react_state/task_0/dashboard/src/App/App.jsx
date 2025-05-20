@@ -1,18 +1,15 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, css } from 'aphrodite';
-import Notifications from '../Notifications/Notifications';
 import Header from '../Header/Header';
 import Login from '../Login/Login';
 import Footer from '../Footer/Footer';
+import Notifications from '../Notifications/Notifications';
 import CourseList from '../CourseList/CourseList';
 import { getLatestNotification } from '../utils/utils';
-import BodySection from '../BodySection/BodySection';
 import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom';
+import BodySection from '../BodySection/BodySection';
 import WithLogging from '../HOC/WithLogging';
-
-const LoginWithLogging = WithLogging(Login);
-const CourseListWithLogging = WithLogging(CourseList);
+import { StyleSheet, css } from 'aphrodite';
 
 class App extends Component {
   constructor(props) {
@@ -20,147 +17,169 @@ class App extends Component {
     this.state = {
       displayDrawer: false,
     };
-
-    this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.ctrlHEventHandler = this.ctrlHEventHandler.bind(this);
     this.handleDisplayDrawer = this.handleDisplayDrawer.bind(this);
     this.handleHideDrawer = this.handleHideDrawer.bind(this);
-  }
+  };
 
-  componentDidMount() {
-    document.addEventListener('keydown', this.handleKeyDown);
-  }
+  handleDisplayDrawer() {
+    this.setState({
+      displayDrawer: true,
+    });
+  };
 
-  componentWillUnmount() {
-    document.removeEventListener('keydown', this.handleKeyDown);
-  }
+  handleHideDrawer() {
+    this.setState({
+      displayDrawer: false,
+    });
+  };
 
-  handleKeyDown(e) {
-    if (e.ctrlKey && e.key === 'h') {
+  ctrlHEventHandler(e) {
+    let k = e.key;
+    if ((e.metaKey || e.ctrlKey) && k === 'h') {
+      e.preventDefault();
       alert('Logging you out');
       this.props.logOut();
     }
-  }
-
-  handleDisplayDrawer = () => {
-    this.setState({ displayDrawer: true });
   };
 
-  handleHideDrawer = () => {
-    this.setState({ displayDrawer: false });
+  handleKeyPressDown() {
+    document.addEventListener("keydown", this.ctrlHEventHandler, false);
+  };
+
+  componentDidMount() {
+    this.handleKeyPressDown();
+  };
+
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.ctrlHEventHandler, false);
   };
 
   render() {
+
     let {
-      isLoggedIn
-    } = this.props || false;
+      isLoggedIn,
+    } = this.props;
 
     let {
       displayDrawer
     } = this.state;
 
-    let notificationsList = [
-      { 
-        id: Math.floor(Math.random() * Date.now()), 
-        type: 'default', 
-        value: 'New course available' 
+    let i = 0;
+    
+    let listNotifications = [
+      {
+        id: i++,
+        type: "default",
+        value: "New course available",
       },
-      { 
-        id: Math.floor(Math.random() * Date.now()), 
-        type: 'urgent', 
-        value: 'New resume available' },
-      { 
-        id: Math.floor(Math.random() * Date.now()), 
-        type: 'urgent', 
-        html: { __html: getLatestNotification() } },
+      {
+        id: i++,
+        type: "urgent",
+        value: "New resume available",
+      },
+      {
+        id: i++,
+        type: "urgent",
+        html: {__html: getLatestNotification()},
+      }
     ];
 
-    let coursesList = [
-      { 
-        id: 1, 
-        name: 'ES6', 
-        credit: 60 
+    let listCourses = [
+      {
+        id: 1,
+        name: "ES6",
+        credit: 60,
       },
-      { 
-        id: 2, 
-        name: 'Webpack', 
-        credit: 20 
+      {
+        id: 2,
+        name: "Webpack",
+        credit: 20,
       },
-      { 
-        id: 3, 
-        name: 'React', 
-        credit: 40 
+      {
+        id: 3,
+        name: "React",
+        credit: 40,
       },
     ];
 
     return (
-      <div className={css(styles.app)}>
-        <div className={css(styles.rootNotifications)}>
-          <Notifications
-            notifications={notificationsList}
-            displayDrawer={displayDrawer}
-            handleDisplayDrawer={this.handleDisplayDrawer}
-            handleHideDrawer={this.handleHideDrawer}
-          />
-        </div>
-
-        <Header />
-
-        <div className={css(styles.appBody)}>
-          {isLoggedIn ? (
-            <BodySectionWithMarginBottom title="Course list">
-              <CourseListWithLogging courses={coursesList} />
-            </BodySectionWithMarginBottom>
-          ) : (
+      <Fragment>
+        <div className={css(styles.app)}>
+          <div className={css(styles.upperside)}>
+            <Notifications
+              listNotifications={listNotifications}
+              displayDrawer={displayDrawer}
+              handleDisplayDrawer={this.handleDisplayDrawer}
+              handleHideDrawer={this.handleHideDrawer}
+            />
+            <Header />
+          </div>
+          {
+            isLoggedIn === false &&
             <BodySectionWithMarginBottom title="Log in to continue">
-              <LoginWithLogging />
+              <Login />
             </BodySectionWithMarginBottom>
-          )}
-
-          <BodySection title="News from the School">
-            <p>Holberton School News goes here</p>
+          }
+          {
+            isLoggedIn === true &&
+            <BodySectionWithMarginBottom title="Course list">
+              <CourseList listCourses={listCourses} />
+            </BodySectionWithMarginBottom>
+          }
+          <BodySection title="News from the school">
+            <p>
+              Labore ut consequat esse nostrud aute exercitation occaecat consequat ad cillum enim et est ex.
+               Qui proident veniam in aute magna occaecat.
+               Esse duis proident aliqua proident eu magna aliqua est exercitation.
+               Cupidatat ex eiusmod et commodo laborum veniam deserunt ad est excepteur cillum laborum.
+            </p>
           </BodySection>
+          <Footer />
         </div>
-
-        <Footer />
-      </div>
-    );
-  }
-}
-
-const hbtnRed = '#e1003c';
+      </Fragment>
+    );  
+  };
+};
 
 const styles = StyleSheet.create({
-  body: {
-    margin: 0,
-    padding: 0,
-  },
   app: {
-    height: '100%',
-    margin: 0,
-    padding: 0,
-    fontFamily: 'sans-serif',
+    position: 'relative',
+    minHeight: '100vh',
   },
-  appBody: {
-    maxHeight: '75vh',
-  },
-  appFooter: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderTop: `3px solid ${hbtnRed}`,
-    height: '2dvh',
-    fontStyle: 'italic',
-    fontSize: '0.9rem',
+  upperside: {
+    display: "flex",
+    flexDirection: "row-reverse",
+    width: "100%",
+    borderBottom: `3px solid var(--holberton-red)`,
+    justifyContent: "space-between",
+  }
+});
+
+const globalStyles = StyleSheet.create({
+  globals: {
+    ':root': {
+      '--holberton-red': '#e1484c',
+    },
+    'body': {
+      maxWidth: '90%',
+      margin: '0 auto',
+    },
+    'div': {
+      padding: '2px 8px',
+    },
   },
 });
+
+css(globalStyles.globals);
 
 App.propTypes = {
   logOut: PropTypes.func,
 };
 
 App.defaultProps = {
-  logOut: () => {},
   isLoggedIn: false,
+  logOut: () => {},
 };
 
 export default App;
