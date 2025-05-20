@@ -96,7 +96,7 @@ describe('Notifications', () => {
         />
       );
 
-      const menuItem = screen.getById('#menuItem');
+      const menuItem = document.getElementById('menuItem');
       expect(menuItem).toBeInTheDocument();
       fireEvent.click(menuItem);
       expect(handleDisplayDrawer).toHaveBeenCalledTimes(1);
@@ -112,7 +112,7 @@ describe('Notifications', () => {
         />
       );
 
-      const closeBtn = screen.getById('#close-btn');
+      const closeBtn = document.getElementById('close-btn');
       expect(closeBtn).toBeInTheDocument();
 
       fireEvent.click(closeBtn);
