@@ -41,7 +41,11 @@ class Login extends Component {
         return (
             <div className={css(styles.body)}>
                 <p>Login to access the full dashboard</p>
-                <form onSubmit={this.handleLoginSubmit} className={css(styles.loginForm)}>
+                <form
+                    onSubmit={this.handleLoginSubmit}
+                    className={css(styles.loginForm)}
+                    data-testid="login-form"
+                >
                     <label htmlFor="email">
                         Email:
                         <input

@@ -89,4 +89,20 @@ describe('App component', () => {
       });
     });
   });
+
+  test('clicking Notifications menu item toggles displayDrawer state', () => {
+    render(<App />);
+    const menuItem = document.getElementById('menuItem');
+    fireEvent.click(menuItem);
+    expect(screen.getByText(/here is the list of notifications/i)).toBeInTheDocument();
+  });
+
+  test('clicking Notifications close button toggles displayDrawer state', () => {
+    render(<App />);
+    const menuItem = document.getElementById('menuItem');
+    fireEvent.click(menuItem);
+    const closeButton = document.getElementById('close-btn');
+    fireEvent.click(closeButton);
+    expect(screen.queryByText(/here is the list of notifications/i)).not.toBeInTheDocument();
+  })
 });

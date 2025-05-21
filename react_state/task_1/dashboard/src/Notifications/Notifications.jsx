@@ -28,10 +28,10 @@ class Notifications extends Component {
                     <p>Here is the list of notifications</p>
                     <button
                         onClick={() => {
-                            console.log('Close button has been clicked');
                             this.props.handleHideDrawer();
                         }}
                         aria-label="Close"
+                        id="close-btn"
                         className={css(styles.closeButton)}
                     >
                         <img
@@ -62,9 +62,12 @@ class Notifications extends Component {
 
         return (
             <>
-                <button className={css(styles.menuItem)} id="menuItem" onClick={handleDisplayDrawer}>
-                    Your notifications
-                </button>
+                <div
+                    className={css(styles.menuItem)}
+                    id="menuItem"
+                    onClick={handleDisplayDrawer}>
+                    <p>Your notifications</p>
+                </div>
 
                 {displayDrawer && (
                     <div className={css(styles.notifications)}>

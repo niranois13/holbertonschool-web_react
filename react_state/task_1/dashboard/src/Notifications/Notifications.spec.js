@@ -51,13 +51,13 @@ describe('Notifications', () => {
       expect(screen.getByText(/no new notification for now/i)).toBeInTheDocument();
     });
 
-    it('calls console.log when close button is clicked', () => {
-      const logSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-      render(<Notifications notifications={mockNotifications} displayDrawer={true} />);
-      fireEvent.click(screen.getByRole('button', { name: /close/i }));
-      expect(logSpy).toHaveBeenCalledWith(expect.stringMatching(/close button has been clicked/i));
-      logSpy.mockRestore();
-    });
+    // it('calls console.log when close button is clicked', () => {
+    //   const logSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+    //   render(<Notifications notifications={mockNotifications} displayDrawer={true} />);
+    //   fireEvent.click(screen.getByRole('button', { name: /close/i }));
+    //   expect(logSpy).toHaveBeenCalledWith(expect.stringMatching(/close button has been clicked/i));
+    //   logSpy.mockRestore();
+    // });
   });
 
   describe('Edge cases and props', () => {
@@ -74,37 +74,52 @@ describe('Notifications', () => {
 
   describe('Interactions', () => {
     it('clicking a notification logs markAsRead message', () => {
-      const logSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+      const logSpy = jest.spyOn(console, 'log').mockImplementation(() => { });
       render(<Notifications notifications={mockNotifications} displayDrawer={true} />);
       fireEvent.click(screen.getByText(/new course available/i));
       expect(logSpy).toHaveBeenCalledWith(expect.stringMatching(/notification 1 has been marked as read/i));
       logSpy.mockRestore();
     });
+  });
 
-    it('clicking "Your notifications" calls handleDisplayDrawer', () => {
-      const handleDisplayDrawer = jest.fn();
-      const { container } = render(
+  describe('Notifications interaction handlers', () => {
+    it('calls handleDisplayDrawer when "Your notifications" is clicked', () => {
+      const handleDisplayDrawer = jest.fn(() => console.log('handleDisplayDrawer called'));
+      render(
         <Notifications
           notifications={mockNotifications}
           handleDisplayDrawer={handleDisplayDrawer}
         />
       );
-      const menuItemDiv = container.querySelector('#menuItem');
-      fireEvent.click(menuItemDiv);
-      expect(handleDisplayDrawer).toHaveBeenCalled();
+
+      const menuItem = document.getElementById('menuItem');
+      expect(menuItem).toBeInTheDocument();
+      fireEvent.click(menuItem);
+      expect(handleDisplayDrawer).toHaveBeenCalledTimes(1);
     });
 
-    it('clicking close button calls handleHideDrawer', () => {
-      const handleHideDrawer = jest.fn();
-      render(<Notifications notifications={mockNotifications} displayDrawer={true} handleHideDrawer={handleHideDrawer} />);
-      fireEvent.click(screen.getByRole('button', { name: /close/i }));
-      expect(handleHideDrawer).toHaveBeenCalled();
+    it('calls handleHideDrawer when close button is clicked', () => {
+      const handleHideDrawer = jest.fn(() => console.log('handleHideDrawer has been called'));
+      render(
+        <Notifications
+          notifications={mockNotifications}
+          displayDrawer={true}
+          handleHideDrawer={handleHideDrawer}
+        />
+      );
+
+      const closeBtn = document.getElementById('close-btn');
+      expect(closeBtn).toBeInTheDocument();
+
+      fireEvent.click(closeBtn);
+      expect(handleHideDrawer).toHaveBeenCalledTimes(1);
     });
   });
 
+
   describe('Performance', () => {
     it('does not re-render when notifications length is unchanged', () => {
-      const logSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+      const logSpy = jest.spyOn(console, 'log').mockImplementation(() => { });
       const { rerender } = render(<Notifications notifications={mockNotifications} displayDrawer={true} />);
       rerender(<Notifications notifications={mockNotifications} displayDrawer={true} />);
       expect(logSpy).not.toHaveBeenCalled();

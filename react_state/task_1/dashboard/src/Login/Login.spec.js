@@ -34,36 +34,36 @@ describe("Login component", () => {
     expect(submitButton).toBeDisabled();
   });
 
-  test("submit button is enabled when email is valid and password >= 8 chars", () => {
+  test("submit button is enabled only when email is valid and password >= 8 chars", () => {
     render(<Login />);
     const emailInput = screen.getByLabelText(/email/i);
     const passwordInput = screen.getByLabelText(/password/i);
     const submitButton = screen.getByRole("button", { name: /ok/i });
-
-    // Initially disabled
     expect(submitButton).toBeDisabled();
 
-    // Enter valid email and invalid password
     fireEvent.change(emailInput, { target: { value: "user@example.com" } });
     fireEvent.change(passwordInput, { target: { value: "123" } });
     expect(submitButton).toBeDisabled();
 
-    // Enter valid password
     fireEvent.change(passwordInput, { target: { value: "password123" } });
     expect(submitButton).not.toBeDisabled();
   });
 
-  test("form submission does not reload the page", () => {
-    const preventDefault = jest.fn();
+  test('form submission does not reload the page', () => {
     render(<Login />);
     const emailInput = screen.getByLabelText(/email/i);
     const passwordInput = screen.getByLabelText(/password/i);
-    const form = screen.getByRole("form", { hidden: true }) || screen.getByTestId("login-form");
+    const form = screen.getByTestId('login-form');
 
-    fireEvent.change(emailInput, { target: { value: "user@example.com" } });
-    fireEvent.change(passwordInput, { target: { value: "password123" } });
+    fireEvent.change(emailInput, { target: { value: 'user@example.com' } });
+    fireEvent.change(passwordInput, { target: { value: 'password123' } });
 
-    fireEvent.submit(form, { preventDefault });
+    // Attach a spy to the form to intercept the submit event
+    const preventDefault = jest.fn();
+    form.addEventListener('submit', e => e.preventDefault = preventDefault);
+
+    fireEvent.submit(form);
+  
     expect(preventDefault).toHaveBeenCalled();
   });
 });
