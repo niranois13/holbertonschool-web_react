@@ -4,6 +4,11 @@ import closebtn from '../assets/close-button.png';
 import NotificationItem from './NotificationItem';
 
 class Notifications extends Component {
+  constructor(props) {
+    super(props);
+    this.markAsRead = this.markAsRead.bind(this);
+  }
+  
   shouldComponentUpdate(nextProps) {
     const { notifications, displayDrawer } = this.props;
     return (
@@ -16,75 +21,61 @@ class Notifications extends Component {
     console.log(`Notification ${id} has been marked as read`);
   };
 
-  renderNotificationsList = () => {
-    const { notifications } = this.props;
-    if (notifications.length === 0) {
-      return <p>No new notification for now</p>;
-    }
-
-    return (
-      <>
-        <div className={css(styles.notificationsTopContent)}>
-          <p>Here is the list of notifications</p>
-          <button
-            onClick={() => {
-              this.props.handleHideDrawer();
-            }}
-            aria-label="Close"
-            id="close-btn"
-            className={css(styles.closeButton)}
-          >
-            <img
-              src={closebtn}
-              alt="Close"
-              className={css(styles.closeButtonImage)}
-            />
-          </button>
-        </div>
-        <ul className={css(styles.ul)}>
-          {notifications.map((notif) => (
-            <NotificationItem
-              key={notif.id}
-              {...notif}
-              markAsRead={() => this.markAsRead(notif.id)}
-            />
-          ))}
-        </ul>
-      </>
-    );
-  };
-
   render() {
     const {
-      displayDrawer = false,
+      notifications,
+      displayDrawer,
       handleDisplayDrawer,
+      handleHideDrawer,
     } = this.props;
 
     return (
       <>
-        <div
-          className={css(styles.menuItem)}
-          id="menuItem"
-          onClick={handleDisplayDrawer}>
-          <p>Your notifications</p>
-        </div>
+        {!displayDrawer && (
+          <div className={css(styles.menuItem)} onClick={handleDisplayDrawer}>
+            <p className={css(styles.menuText)}>Your notifications</p>
+          </div>
+        )}
 
         {displayDrawer && (
-          <div className={css(styles.notifications)}>
-            {this.renderNotificationsList()}
+          <div className={css(styles.panel)}>
+            <button
+              className={css(styles.closeBtn)}
+              onClick={handleHideDrawer}
+              aria-label="Close"
+            >
+              <img
+                src={closebtn}
+                alt="Close"
+                className={css(styles.closeIcon)}
+              />
+            </button>
+
+            {notifications.length > 0 ? (
+              <>
+                <p className={css(styles.panelText)}>Here is the list of notifications</p>
+                <ul className={css(styles.ul)}>
+                  {notifications.map((notification) => (
+                    <NotificationItem
+                      key={notification.id}
+                      id={notification.id}
+                      type={notification.type}
+                      value={notification.value}
+                      html={notification.html}
+                      markAsRead={this.handleMarkAsRead(notification.id)}
+                    />
+                  ))}
+                </ul>
+              </>
+            ) : (
+              <p>No new notification for now</p>
+            )}
           </div>
         )}
       </>
     );
   }
 }
-
-Notifications.defaultProps = {
-  notifications: [],
-  displayDrawer: false,
-  handleDisplayDrawer: () => { },
-  handleHideDrawer: () => { },
-};
 
 const bounce = {
   '0%': { transform: 'translateY(0px)' },

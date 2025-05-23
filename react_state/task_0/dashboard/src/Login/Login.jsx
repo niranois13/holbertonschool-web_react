@@ -8,11 +8,11 @@ export default function Login() {
             <div className={css(styles.loginForm)}>
                 <form>
                     <label htmlFor="email" >
-                        Email:
+                        Email
                         <input id="email" type="email" className={css(styles.input)} autoComplete="username" />
                     </label>
                     <label htmlFor="password">
-                        Password:
+                        Password
                         <input id="password" type="password" className={css(styles.input)} autoComplete="current-password" />
                     </label>
                     <button className={css(styles.button)}>OK</button>
