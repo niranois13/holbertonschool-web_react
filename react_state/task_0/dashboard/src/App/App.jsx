@@ -73,7 +73,7 @@ class App extends Component {
     const { isLoggedIn } = this.props;
 
     return (
-      <React.Fragment>
+      <>
         <div className={css(styles.app)}>
           <div className={css(styles.notifications)}>
             <Notifications
@@ -100,7 +100,7 @@ class App extends Component {
           </div>
           <Footer />
         </div>
-      </React.Fragment>
+      </>
     );
   }
 }

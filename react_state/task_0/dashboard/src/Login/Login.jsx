@@ -6,15 +6,17 @@ export default function Login() {
         <div className={css(styles.body)}>
             <p>Login to access the full dashboard</p>
             <div className={css(styles.loginForm)}>
-                <label htmlFor="email" >
-                    Email:
-                    <input id="email" type="email" className={css(styles.input)} />
-                </label>
-                <label htmlFor="password">
-                    Password:
-                    <input id="password" type="password" className={css(styles.input)} />
-                </label>
-                <button className={css(styles.button)}>OK</button>
+                <form>
+                    <label htmlFor="email" >
+                        Email:
+                        <input id="email" type="email" className={css(styles.input)} autoComplete="username" />
+                    </label>
+                    <label htmlFor="password">
+                        Password:
+                        <input id="password" type="password" className={css(styles.input)} autoComplete="current-password" />
+                    </label>
+                    <button className={css(styles.button)}>OK</button>
+                </form>
             </div>
         </div>
     );
