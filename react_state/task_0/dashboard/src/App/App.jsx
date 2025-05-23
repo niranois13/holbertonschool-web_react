@@ -14,7 +14,6 @@ import WithLogging from '../HOC/WithLogging';
 const LoginWithLogging = WithLogging(Login);
 const CourseListWithLogging = WithLogging(CourseList);
 
-// Helper to generate a unique ID
 const generateId = () => Math.floor(Math.random() * Date.now());
 
 const coursesList = [
@@ -30,14 +29,25 @@ const notificationsList = [
 ];
 
 class App extends Component {
-  state = {
-    isLoggedIn: this.props.isLoggedIn || false,
-    displayDrawer: false,
+  constructor(props) {
+    super(props);
+    this.state = {
+      displayDrawer: false,
+    };
   };
 
+  static defaultProps = {
+    logOut: () => {},
+    isLoggedIn: false,
+  };
+
+  static propTypes = {
+    logOut: PropTypes.func,
+    isLoggedIn: PropTypes.bool,
+  };
+  
   componentDidMount() {
     document.addEventListener('keydown', this.handleKeyDown);
-    document.body.className = css(styles.body); // Apply body style
   }
 
   componentWillUnmount() {
@@ -51,11 +61,19 @@ class App extends Component {
     }
   };
 
-  handleDisplayDrawer = () => this.setState({ displayDrawer: true });
-  handleHideDrawer = () => this.setState({ displayDrawer: false });
+  handleDisplayDrawer = () => {
+    this.setState({ displayDrawer: true })
+  };
+
+  handleHideDrawer = () => {
+    this.setState({ displayDrawer: false })
+  };
 
   renderMainContent() {
-    return this.state.isLoggedIn ? (
+    const { isLoggedIn } = this.props;
+
+    return (
+      isLoggedIn ? (
       <BodySectionWithMarginBottom title="Course list">
         <CourseListWithLogging courses={coursesList} />
       </BodySectionWithMarginBottom>
@@ -63,8 +81,8 @@ class App extends Component {
       <BodySectionWithMarginBottom title="Log in to continue">
         <LoginWithLogging />
       </BodySectionWithMarginBottom>
-    );
-  }
+    ));
+  };
 
   render() {
     const { displayDrawer } = this.state;
@@ -128,15 +146,5 @@ const styles = StyleSheet.create({
     fontSize: '0.9rem',
   },
 });
-
-App.propTypes = {
-  logOut: PropTypes.func,
-  isLoggedIn: PropTypes.bool,
-};
-
-App.defaultProps = {
-  logOut: () => {},
-  isLoggedIn: false,
-};
 
 export default App;
