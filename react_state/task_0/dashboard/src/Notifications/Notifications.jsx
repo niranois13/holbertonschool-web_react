@@ -10,6 +10,29 @@ class Notifications extends Component {
     this.markAsRead = this.markAsRead.bind(this);
   }
 
+  static propTypes = {
+    displayDrawer: PropTypes.bool,
+    notifications: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        type: PropTypes.string,
+        value: PropTypes.string,
+        html: PropTypes.shape({
+          __html: PropTypes.string,
+        }),
+      })
+    ),
+    handleDisplayDrawer: PropTypes.func,
+    handleHideDrawer: PropTypes.func,
+  };
+
+  static defaultProps = {
+    notifications: [],
+    displayDrawer: false,
+    handleDisplayDrawer: () => {},
+    handleHideDrawer: () => {},
+  };
+
   shouldComponentUpdate(nextProps) {
     return (
       nextProps.notifications.length !== this.props.notifications.length ||
@@ -93,29 +116,6 @@ class Notifications extends Component {
     );
   }
 }
-
-Notifications.propTypes = {
-  displayDrawer: PropTypes.bool,
-  notifications: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      type: PropTypes.string,
-      value: PropTypes.string,
-      html: PropTypes.shape({
-        __html: PropTypes.string,
-      }),
-    })
-  ),
-  handleDisplayDrawer: PropTypes.func,
-  handleHideDrawer: PropTypes.func,
-};
-
-Notifications.defaultProps = {
-  notifications: [],
-  displayDrawer: false,
-  handleDisplayDrawer: () => {},
-  handleHideDrawer: () => {},
-};
 
 const bounce = {
   '0%': { transform: 'translateY(0px)' },
