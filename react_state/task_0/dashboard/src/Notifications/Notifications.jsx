@@ -17,9 +17,14 @@ class Notifications extends Component {
     );
   }
 
-  markAsRead = (id) => {
+  markAsRead(id) {
     console.log(`Notification ${id} has been marked as read`);
+  }
+
+  handleMarkAsRead = (id) => () => {
+    this.markAsRead(id);
   };
+
 
   renderNotificationsList = () => {
     const { notifications } = this.props;
@@ -70,6 +75,7 @@ class Notifications extends Component {
         <div
           className={css(styles.menuItem)}
           id="menuItem"
+          role="button"
           onClick={handleDisplayDrawer}>
           <p>Your notifications</p>
         </div>

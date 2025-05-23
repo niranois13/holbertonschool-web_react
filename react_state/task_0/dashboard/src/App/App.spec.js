@@ -60,6 +60,13 @@ describe('App component', () => {
   });
 
   describe('Keyboard interactions', () => {
+    beforeEach(() => {
+      jest.spyOn(window, 'alert').mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
     test('calls logOut function on Ctrl + H', () => {
       const mockLogOut = jest.fn();
       render(<App logOut={mockLogOut} />);
