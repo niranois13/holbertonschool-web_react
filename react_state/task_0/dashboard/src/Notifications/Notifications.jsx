@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { StyleSheet, css } from 'aphrodite';
 import closebtn from '../assets/close-button.png';
 import NotificationItem from './NotificationItem';
@@ -8,12 +9,11 @@ class Notifications extends Component {
     super(props);
     this.markAsRead = this.markAsRead.bind(this);
   }
-  
+
   shouldComponentUpdate(nextProps) {
-    const { notifications, displayDrawer } = this.props;
     return (
-      nextProps.notifications.length !== notifications.length ||
-      nextProps.displayDrawer !== displayDrawer
+      nextProps.notifications.length !== this.props.notifications.length ||
+      nextProps.displayDrawer !== this.props.displayDrawer
     );
   }
 
@@ -25,9 +25,9 @@ class Notifications extends Component {
     this.markAsRead(id);
   };
 
-
   renderNotificationsList = () => {
-    const { notifications } = this.props;
+    const { notifications, handleHideDrawer } = this.props;
+
     if (notifications.length === 0) {
       return <p>No new notification for now</p>;
     }
@@ -37,9 +37,7 @@ class Notifications extends Component {
         <div className={css(styles.notificationsTopContent)}>
           <p>Here is the list of notifications</p>
           <button
-            onClick={() => {
-              this.props.handleHideDrawer();
-            }}
+            onClick={handleHideDrawer}
             aria-label="Close"
             id="close-btn"
             className={css(styles.closeButton)}
@@ -55,8 +53,11 @@ class Notifications extends Component {
           {notifications.map((notif) => (
             <NotificationItem
               key={notif.id}
-              {...notif}
-              markAsRead={() => this.markAsRead(notif.id)}
+              id={notif.id}
+              type={notif.type}
+              value={notif.value}
+              html={notif.html}
+              markAsRead={this.handleMarkAsRead(notif.id)}
             />
           ))}
         </ul>
@@ -66,19 +67,22 @@ class Notifications extends Component {
 
   render() {
     const {
-      displayDrawer = false,
+      displayDrawer,
       handleDisplayDrawer,
     } = this.props;
 
     return (
       <>
-        <div
-          className={css(styles.menuItem)}
-          id="menuItem"
-          role="button"
-          onClick={handleDisplayDrawer}>
-          <p>Your notifications</p>
-        </div>
+        {!displayDrawer && (
+          <div
+            className={css(styles.menuItem)}
+            id="menuItem"
+            role="button"
+            onClick={handleDisplayDrawer}
+          >
+            <p>Your notifications</p>
+          </div>
+        )}
 
         {displayDrawer && (
           <div className={css(styles.notifications)}>
@@ -90,11 +94,27 @@ class Notifications extends Component {
   }
 }
 
+Notifications.propTypes = {
+  displayDrawer: PropTypes.bool,
+  notifications: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      type: PropTypes.string,
+      value: PropTypes.string,
+      html: PropTypes.shape({
+        __html: PropTypes.string,
+      }),
+    })
+  ),
+  handleDisplayDrawer: PropTypes.func,
+  handleHideDrawer: PropTypes.func,
+};
+
 Notifications.defaultProps = {
   notifications: [],
   displayDrawer: false,
-  handleDisplayDrawer: () => { },
-  handleHideDrawer: () => { },
+  handleDisplayDrawer: () => {},
+  handleHideDrawer: () => {},
 };
 
 const bounce = {
