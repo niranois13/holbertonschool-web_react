@@ -69,14 +69,11 @@ describe('App component', () => {
 
     test('shows alert on Ctrl + H', () => {
       const mockLogOut = jest.fn();
-      const originalAlert = window.alert;
-      window.alert = jest.fn();
-
+      const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {});
       render(<App logOut={mockLogOut} />);
       fireEvent.keyDown(document, { key: 'h', ctrlKey: true });
-
-      expect(window.alert).toHaveBeenCalledWith(expect.stringMatching(/logging you out/i));
-      window.alert = originalAlert;
+      expect(alertSpy).toHaveBeenCalledWith(expect.stringMatching(/logging you out/i));
+      alertSpy.mockRestore();
     });
   });
 
@@ -104,5 +101,5 @@ describe('App component', () => {
     const closeButton = document.getElementById('close-btn');
     fireEvent.click(closeButton);
     expect(screen.queryByText(/here is the list of notifications/i)).not.toBeInTheDocument();
-  })
+  });
 });
