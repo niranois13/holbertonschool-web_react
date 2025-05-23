@@ -47,7 +47,7 @@ class Login extends Component {
                     data-testid="login-form"
                 >
                     <label htmlFor="email">
-                        Email:
+                        Email
                         <input
                             id="email"
                             type="email"
@@ -58,7 +58,7 @@ class Login extends Component {
                     </label>
 
                     <label htmlFor="password">
-                        Password:
+                        Password
                         <input
                             id="password"
                             type="password"
