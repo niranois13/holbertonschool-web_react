@@ -48,6 +48,7 @@ class App extends Component {
 
   handleKeyDown = (e) => {
     if (e.ctrlKey && e.key === 'h') {
+      e.preventDefault();
       alert('Logging you out');
       this.logOut();
     }
