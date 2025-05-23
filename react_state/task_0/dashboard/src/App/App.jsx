@@ -69,46 +69,38 @@ class App extends Component {
     this.setState({ displayDrawer: false })
   };
 
-  renderMainContent() {
+  render() {
     const { isLoggedIn } = this.props;
 
     return (
-      isLoggedIn ? (
-      <BodySectionWithMarginBottom title="Course list">
-        <CourseListWithLogging courses={coursesList} />
-      </BodySectionWithMarginBottom>
-    ) : (
-      <BodySectionWithMarginBottom title="Log in to continue">
-        <LoginWithLogging />
-      </BodySectionWithMarginBottom>
-    ));
-  };
-
-  render() {
-    const { displayDrawer } = this.state;
-
-    return (
-      <div className={css(styles.app)}>
-        <div className={css(styles.rootNotifications)}>
-          <Notifications
-            notifications={notificationsList}
-            displayDrawer={displayDrawer}
-            handleDisplayDrawer={this.handleDisplayDrawer}
-            handleHideDrawer={this.handleHideDrawer}
-          />
+      <React.Fragment>
+        <div className={css(styles.app)}>
+          <div className={css(styles.notifications)}>
+            <Notifications
+              notifications={notificationsList}
+              displayDrawer={this.state.displayDrawer}
+              handleDisplayDrawer={this.handleDisplayDrawer}
+              handleHideDrawer={this.handleHideDrawer}
+            />
+          </div>
+          <Header />
+          <div className={css(styles.body)}>
+            {isLoggedIn ? (
+              <BodySectionWithMarginBottom title="Course list">
+                <CourseList courses={coursesList} />
+              </BodySectionWithMarginBottom>
+            ) : (
+              <BodySectionWithMarginBottom title="Log in to continue">
+                <Login />
+              </BodySectionWithMarginBottom>
+            )}
+            <BodySection title="News from the School">
+              <p>Holberton School News goes here</p>
+            </BodySection>
+          </div>
+          <Footer />
         </div>
-
-        <Header />
-
-        <div className={css(styles.appBody)}>
-          {this.renderMainContent()}
-          <BodySection title="News from the School">
-            <p>Holberton School News goes here</p>
-          </BodySection>
-        </div>
-
-        <Footer />
-      </div>
+      </React.Fragment>
     );
   }
 }
