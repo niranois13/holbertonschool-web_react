@@ -90,6 +90,10 @@ const styles = StyleSheet.create({
     padding: 0,
     boxSizing: 0,
   },
+  footer: {
+        margin: 0,
+        padding: 0,
+    },
   app: {
     height: '100%',
     margin: 0,
