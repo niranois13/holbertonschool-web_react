@@ -8,7 +8,7 @@ import { getLatestNotification } from '../utils/utils'
 import React, { useState } from 'react';
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn] = useState(true);
 
   const notificationsList = [
     { id: Math.floor(Math.random() * Date.now()), type: 'default', value: 'New course available' },
