@@ -8,7 +8,7 @@ import { getLatestNotification } from '../utils/utils'
 import React from 'react';
 
 function App() {
-  const isLoggedIn = false;
+  const isLoggedIn = true;
 
   const notificationsList = [
     { id: 1, type: 'default', value: 'New course available' },
@@ -25,11 +25,15 @@ function App() {
   return (
     <>
       <div className="root-notifications">
-        <Notifications notifications={notificationsList} displayDrawer={true}/>
+        <Notifications notifications={notificationsList}/>
       </div>
 
       <Header />
-      {isLoggedIn ? <CourseList courses={coursesList} /> : <Login />}
+      {isLoggedIn ? ( 
+        <CourseList courses={coursesList} />
+        ) : (
+        <Login />
+        )}
       <Footer />
     </>
   )
