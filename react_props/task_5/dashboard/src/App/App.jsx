@@ -5,10 +5,10 @@ import Login from '../Login/Login';
 import Footer from '../Footer/Footer';
 import CourseList from '../CourseList/CourseList';
 import { getLatestNotification } from '../utils/utils'
-import React from 'react';
+import React, { useState } from 'react';
 
 function App() {
-  const isLoggedIn = false;
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   const notificationsList = [
     { id: Math.floor(Math.random() * Date.now()), type: 'default', value: 'New course available' },
@@ -28,7 +28,7 @@ function App() {
         <Notifications notifications={notificationsList} displayDrawer={true}/>
       </div>
 
-      <Header />
+      <Header isLoggedIn={isLoggedIn} />
       {isLoggedIn ? <CourseList courses={coursesList} /> : <Login />}
       <Footer />
     </>
