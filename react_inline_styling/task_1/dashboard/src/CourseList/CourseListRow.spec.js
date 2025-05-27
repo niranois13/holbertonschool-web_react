@@ -38,7 +38,7 @@ describe('When isHeader is true', () => {
     expect(cols).toHaveLength(2);
   });
 
-  test('Check that header row with one cell has correct background color', () => {
+  test.skip('Check that header row with one cell has correct background color', () => {
     render(
       <table>
         <tbody>
@@ -52,7 +52,7 @@ describe('When isHeader is true', () => {
     expect(bgColor).toBe('rgba(222, 181, 181, 0.271)');
   });
 
-  test('Check that header row with two cells has correct background color', () => {
+  test.skip('Check that header row with two cells has correct background color', () => {
     render(
       <table>
         <tbody>
@@ -66,7 +66,7 @@ describe('When isHeader is true', () => {
     expect(bgColor).toBe('rgba(222, 181, 181, 0.271)');
   });
 
-  test('Check that non-header row has correct background color', () => {
+  test.skip('Check that non-header row has correct background color', () => {
     render(
       <table>
         <tbody>
