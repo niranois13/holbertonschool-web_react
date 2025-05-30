@@ -1,4 +1,5 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
+import axios from 'axios';
 import { StyleSheet, css } from 'aphrodite';
 import Notifications from '../Notifications/Notifications';
 import Header from '../Header/Header';
@@ -15,32 +16,48 @@ const LoginWithLogging = WithLogging(Login);
 const CourseListWithLogging = WithLogging(CourseList);
 const ContextProvider = newContext.Provider;
 
-const generateId = () => Math.floor(Math.random() * Date.now());
-
-const coursesList = [
-    { id: 1, name: 'ES6', credit: 60 },
-    { id: 2, name: 'Webpack', credit: 20 },
-    { id: 3, name: 'React', credit: 40 },
-];
-
-const notificationsList = [
-    { id: generateId(), type: 'default', value: 'New course available' },
-    { id: generateId(), type: 'urgent', value: 'New resume available' },
-    { id: generateId(), type: 'urgent', html: { __html: getLatestNotification() } },
-];
-
-const App = (props) => {
+const App = () => {
     const [user, setUser] = useState({
         email: '',
         password: '',
         isLoggedIn: false,
     });
 
-    const [notifications, setNotifications] = useState(
-        props.notifications || notificationsList
-    );
-
+    const [notifications, setNotifications] = useState([]);
+    const [courses, setCourses] = useState([]);
     const [displayDrawer, setDisplayDrawer] = useState(false);
+
+    useEffect(() => {
+        const fetchNotifications = async () => {
+            try {
+                const { data } = await axios.get('/notifications.json');
+                const updated = data.map((notif, idx) =>
+                    idx === data.length - 1 && notif.html
+                        ? { ...notif, html: { __html: getLatestNotification() } }
+                        : notif
+                );
+
+                setNotifications(updated);
+            } catch (err) {
+                console.error('Failed to load notifications:', err);
+            }
+        };
+
+        fetchNotifications();
+    }, []);
+
+    useEffect(() => {
+        const fetchCourses = async () => {
+            try {
+                const { data } = await axios.get('/courses.json');
+                setCourses(data);
+            } catch (err) {
+                console.error('Failed to load courses:', err);
+            }
+        };
+
+        fetchCourses();
+    }, [user]);
 
     const logIn = useCallback((email, password) => {
         setUser({ email, password, isLoggedIn: true });
@@ -83,7 +100,7 @@ const App = (props) => {
                 <div className={css(styles.appBody)}>
                     {user.isLoggedIn ? (
                         <BodySectionWithMarginBottom title="Course list">
-                            <CourseListWithLogging courses={coursesList} />
+                            <CourseListWithLogging courses={courses} />
                         </BodySectionWithMarginBottom>
                     ) : (
                         <BodySectionWithMarginBottom title="Log in to continue">

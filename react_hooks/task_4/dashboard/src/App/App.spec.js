@@ -1,21 +1,50 @@
 import React from 'react';
-import { render, screen, fireEvent, cleanup } from '@testing-library/react';
+import { render, screen, fireEvent, cleanup, waitFor } from '@testing-library/react';
 import App from './App';
 import { StyleSheetTestUtils } from 'aphrodite';
+import axios from 'axios';
+
+// Mock axios globally
+jest.mock('axios');
+
+const mockNotifications = [
+  { id: 1, type: 'default', value: 'New course available' },
+  { id: 2, type: 'urgent', value: 'New resume available' },
+  { id: 3, type: 'urgent', html: { __html: '<strong>Urgent requirement</strong>' } },
+];
+
+const mockCourses = [
+  { id: 1, name: 'ES6', credit: 60 },
+  { id: 2, name: 'Webpack', credit: 20 },
+  { id: 3, name: 'React', credit: 40 },
+];
 
 describe('App component', () => {
   beforeEach(() => {
     StyleSheetTestUtils.suppressStyleInjection();
+
+    axios.get.mockImplementation((url) => {
+      switch (url) {
+        case '/notifications.json':
+          return Promise.resolve({ data: mockNotifications });
+        case '/courses.json':
+          return Promise.resolve({ data: mockCourses });
+        default:
+          return Promise.reject(new Error('not found'));
+      }
+    });
   });
 
   afterEach(() => {
     cleanup();
     StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+    jest.clearAllMocks();
   });
 
   describe('Basic rendering when not logged in', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       render(<App />);
+      await waitFor(() => screen.getByText(/login to access the full dashboard/i));
     });
 
     test('renders the main heading', () => {
@@ -52,78 +81,60 @@ describe('App component', () => {
   });
 
   describe('When user is logged in', () => {
-  test('displays Course List instead of Login', () => {
-    render(<App />);
-    const emailInput = screen.getByLabelText(/email/i);
-    const passwordInput = screen.getByLabelText(/password/i);
-    const loginButton = screen.getByRole('button', { name: /ok/i });
-
-    fireEvent.change(emailInput, { target: { value: 'user@holberton.io' } });
-    fireEvent.change(passwordInput, { target: { value: 'pass1234' } });
-    fireEvent.click(loginButton);
-
-    expect(screen.queryByText(/log in to continue/i)).not.toBeInTheDocument()
-    expect(screen.getByText(/course list/i)).toBeInTheDocument();
-  });
-
-  test.skip('logs out user when Ctrl+H is pressed', () => {
-    window.alert = jest.fn();
-    render(<App />);
-    const emailInput = screen.getByLabelText(/email/i);
-    const passwordInput = screen.getByLabelText(/password/i);
-    fireEvent.change(emailInput, { target: { value: 'user@holberton.io' } });
-    fireEvent.change(passwordInput, { target: { value: 'pass123' } });
-    fireEvent.click(screen.getByRole('button', { name: /ok/i }));
-
-    fireEvent.keyDown(document, { key: 'h', ctrlKey: true });
-
-    expect(window.alert).toHaveBeenCalledWith('Logging you out');
-    expect(screen.getByText(/log in to continue/i)).toBeInTheDocument();
-  });
-});
-
-  describe('Accessibility and semantics', () => {
-    test('all inputs have accessible labels', () => {
+    test('displays Course List instead of Login', async () => {
       render(<App />);
-      const inputs = screen.getAllByRole('textbox');
-      inputs.forEach((input) => {
-        expect(input.getAttribute('aria-label') || input.getAttribute('id')).toBeTruthy();
-      });
+      fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'user@holberton.io' } });
+      fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'pass1234' } });
+      fireEvent.click(screen.getByRole('button', { name: /ok/i }));
+
+      await waitFor(() => screen.getByText(/course list/i));
+      expect(screen.queryByText(/log in to continue/i)).not.toBeInTheDocument();
+      expect(screen.getByText(/course list/i)).toBeInTheDocument();
     });
   });
 
-  test('clicking Notifications menu item toggles displayDrawer state', () => {
+  test('clicking Notifications menu item toggles displayDrawer state', async () => {
     render(<App />);
+    await waitFor(() => screen.getByText(/your notifications/i));
+
     const menuItem = document.getElementById('menuItem');
     fireEvent.click(menuItem);
     expect(screen.getByText(/here is the list of notifications/i)).toBeInTheDocument();
   });
 
-  test('clicking Notifications close button toggles displayDrawer state', () => {
+  test('clicking Notifications close button hides drawer', async () => {
     render(<App />);
-    const menuItem = document.getElementById('menuItem');
-    fireEvent.click(menuItem);
-    const closeButton = document.getElementById('close-btn');
-    fireEvent.click(closeButton);
+    await waitFor(() => screen.getByText(/your notifications/i));
+
+    fireEvent.click(document.getElementById('menuItem'));
+    fireEvent.click(document.getElementById('close-btn'));
     expect(screen.queryByText(/here is the list of notifications/i)).not.toBeInTheDocument();
-  })
-});
+  });
 
-describe('App behavior', () => {
-  it('removes notification on click and logs correctly', () => {
-    const fixedNotifications = [
-      { id: 'fixed-id-123', type: 'default', value: 'New course available' },
-    ];
-    const logSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+  describe('Notification behavior', () => {
+    test('removes notification on click and logs correctly', async () => {
+      const logSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+      render(<App />);
+      await waitFor(() => screen.getByText(/your notifications/i));
+      fireEvent.click(screen.getByText(/your notifications/i));
+      const notif = screen.getByText(/new course available/i);
+      fireEvent.click(notif);
 
-    render(<App notifications={fixedNotifications} />);
-    fireEvent.click(screen.getByText(/your notifications/i));
-    const notif = screen.getByText(/new course available/i);
-    fireEvent.click(notif);
+      expect(logSpy).toHaveBeenCalledWith('Notification 1 has been marked as read');
+      expect(screen.queryByText(/new course available/i)).not.toBeInTheDocument();
+      logSpy.mockRestore();
+    });
+  });
 
-    expect(logSpy).toHaveBeenCalledWith('Notification fixed-id-123 has been marked as read');
-    expect(screen.queryByText(/new course available/i)).not.toBeInTheDocument();
+  describe('Accessibility and semantics', () => {
+    test('all inputs have accessible labels', async () => {
+      render(<App />);
+      await waitFor(() => screen.getByLabelText(/email/i));
+      const email = screen.getByLabelText(/email/i);
+      const password = screen.getByLabelText(/password/i);
 
-    logSpy.mockRestore();
+      expect(email).toHaveAttribute('type', 'email');
+      expect(password).toHaveAttribute('type', 'password');
+    });
   });
 });
