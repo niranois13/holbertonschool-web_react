@@ -31,7 +31,7 @@ describe('authSlice', () => {
       isLoggedIn: true,
     };
 
-    const state = authReducer(stateLoggedIn, logout());
+    const state = autReducer(stateLoggedIn, logout());
 
     expect(state.user.email).toBe('');
     expect(state.user.password).toBe('');
