@@ -1,4 +1,3 @@
-import React from 'react';
 import { css } from 'aphrodite';
 
 function CourseListRow({ isHeader, textFirstCell, textSecondCell, style }) {
