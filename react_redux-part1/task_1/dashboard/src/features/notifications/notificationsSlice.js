@@ -20,12 +20,16 @@ export const fetchNotifications = createAsyncThunk(
       const response = await axios.get(ENDPOINTS.notifications);
       const data = await response.data;
 
-      const updatedNotification = data.map((notifications) =>{
+      const updatedNotification = data.map((notifications) => {
         if (notifications.id === 3) {
-          return { ...notifications, value: getLatestNotification() };
+          const latestValue = getLatestNotification();
+          if (notifications.value !== latestValue) {
+            return { ...notifications, value: latestValue };
+          }
         }
         return notifications;
     });
+
       return updatedNotification;
     } catch (error) {
       return thunkAPI.rejectWithValue('Failed to fetch notifications');
@@ -34,7 +38,7 @@ export const fetchNotifications = createAsyncThunk(
 )
 
 export const notificationsSlice = createSlice({
-  name: 'notifications',
+  name: 'notif',
   initialState,
   reducers: {
     markNotificationAsRead: (state, action) => {
