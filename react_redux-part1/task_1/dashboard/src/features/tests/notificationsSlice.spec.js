@@ -117,7 +117,7 @@ describe('notificationsSlice', () => {
 
   it('should log markNotificationsAsRead in the console', () => {
     const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-    notificationsReducer(initialState, markNotificationAsRead({ id: 1 }));
+    notificationsReducer(initialState, markNotificationAsRead(1));
     expect(consoleSpy).toHaveBeenCalledWith('Notification 1 has been marked as read');
     consoleSpy.mockRestore();
   });
