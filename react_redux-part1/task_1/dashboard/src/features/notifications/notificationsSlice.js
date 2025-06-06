@@ -20,16 +20,20 @@ export const fetchNotifications = createAsyncThunk(
       const response = await axios.get(ENDPOINTS.notifications);
       const data = response.data;
 
-      const updatedNotification = data.map((reqNotif) => {
-        if (reqNotif.id === 3) {
+      const updatedNotifications = [];
+
+      for (const notif of data) {
+        if (notif.id === 3) {
           const latestValue = getLatestNotification();
-          if (reqNotif.value !== latestValue) {
-            return { ...reqNotif, value: latestValue };
+          if (notif.value !== latestValue) {
+            updatedNotifications.push({ ...notif, value: latestValue });
+            continue;
           }
         }
-        return reqNotif;
-    });
-      return updatedNotification;
+        updatedNotifications.push(notif);
+      }
+
+      return updatedNotifications;
     } catch (error) {
       return thunkAPI.rejectWithValue('Failed to fetch notifications');
     }
