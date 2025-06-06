@@ -159,7 +159,7 @@ describe('notificationsSlice with axios-mock-adapter', () => {
       displayDrawer: true,
     };
 
-    const newState = notificationsReducer(previousState, markNotificationAsRead({ id: 2 }));
+    const newState = notificationsReducer(previousState, markNotificationAsRead(2));
     expect(newState.notifications).toHaveLength(2);
     expect(newState.notifications.find((n) => n.id === 2)).toBeUndefined();
   });

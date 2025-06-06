@@ -41,7 +41,7 @@ export const notificationsSlice = createSlice({
   initialState,
   reducers: {
     markNotificationAsRead: (state, action) => {
-      const { id } = action.payload || { };
+      const id = action.payload || null;
 
       if (typeof id !== 'number')
         return;
