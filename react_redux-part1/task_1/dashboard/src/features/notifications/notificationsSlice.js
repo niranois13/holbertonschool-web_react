@@ -18,7 +18,7 @@ export const fetchNotifications = createAsyncThunk(
   async(_, thunkAPI) => {
     try {
       const response = await axios.get(ENDPOINTS.notifications);
-      const data = await response.data;
+      const data = response.data;
 
       const updatedNotification = data.map((reqNotif) => {
         if (reqNotif.id === 3) {
@@ -37,17 +37,22 @@ export const fetchNotifications = createAsyncThunk(
 )
 
 export const notificationsSlice = createSlice({
-  name: 'notif',
+  name: 'notifications',
   initialState,
   reducers: {
     markNotificationAsRead: (state, action) => {
-      const { id } = action.payload;
+      const { id } = action.payload || { };
+
+      if (typeof id !== 'number')
+        return;
+
       for (let i = 0; i < state.notifications.length; i++) {
         if (state.notifications[i].id === id) {
           state.notifications.splice(i, 1);
           break;
         }
       }
+
       console.log(`Notification ${id} has been marked as read`);
     },
     hideDrawer: (state) => {
