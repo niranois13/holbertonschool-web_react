@@ -46,12 +46,9 @@ export const notificationsSlice = createSlice({
       if (typeof id !== 'number')
         return;
 
-      for (let i = 0; i < state.notifications.length; i++) {
-        if (state.notifications[i].id === id) {
-          state.notifications.splice(i, 1);
-          break;
-        }
-      }
+      state.notifications = state.notifications.filter(
+        (notification) => notification.id !== id
+      );
 
       console.log(`Notification ${id} has been marked as read`);
     },
