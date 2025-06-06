@@ -15,32 +15,27 @@ const ENDPOINTS = {
 
 export const fetchNotifications = createAsyncThunk(
   'notifications/fetchNotifications',
-  async() => {
+  async () => {
     try {
       const response = await axios.get(ENDPOINTS.notifications);
-      const data = response.data.notifications;
+      const currentNotifications = response.data.notifications;
 
-      const updatedNotifications = [];
-      const latestValue = getLatestNotification();
-      let foundLatest = false;
+      const latestNotif = {
+        id: 3,
+        type: "urgent",
+        html: { __html: getLatestNotification() },
+      };
 
-      for (const notif of data) {
-        if (notif.id === 3) {
-          foundLatest = true;
-          if (notif.value !== latestValue) {
-            updatedNotifications.push({ ...notif, value: latestValue });
-            continue;
-          }
-        }
-        updatedNotifications.push(notif);
-      }
+      const indexToReplace = currentNotifications.findIndex(
+        (notification) => notification.id === 3
+      );
 
-      if (!foundLatest) {
-        updatedNotifications.push({
-          id: 3,
-          type: 'default',
-          value: latestValue,
-        });
+      const updatedNotifications = [...currentNotifications];
+
+      if (indexToReplace !== -1) {
+        updatedNotifications[indexToReplace] = latestNotif;
+      } else {
+        updatedNotifications.push(latestNotif);
       }
 
       return updatedNotifications;

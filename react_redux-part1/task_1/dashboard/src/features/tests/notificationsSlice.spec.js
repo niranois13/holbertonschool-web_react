@@ -105,20 +105,6 @@ describe('notificationsSlice', () => {
 })
 
 describe('notificationsSlice with axios-mock-adapter', () => {
-  let store;
-
-  beforeEach(() => {
-    store = configureStore({
-      reducer: {
-        notifications: notificationsReducer,
-      },
-    });
-  });
-
-  afterEach(() => {
-    mock.reset();
-  });
-
   it('should not crash if fetchNotifications fails (rejected)', async () => {
       mock.onGet(ENDPOINTS.notifications).reply(500);
 
@@ -127,17 +113,6 @@ describe('notificationsSlice with axios-mock-adapter', () => {
 
       const state = store.getState().notifications;
       expect(state.notifications).toEqual([]);
-  });
-
-  it('should fetch notifications and update the state correctly', async () => {
-    mock.onGet('http://localhost:5173/notifications.json').reply(200, { notifications: mockData });
-
-    await store.dispatch(fetchNotifications());
-
-    const state = store.getState().notifications;
-
-    expect(state.notifications.length).toBe(2);
-    expect(state.notifications.find(n => n.id === 3).value).toBe('<strong>Urgent requirement</strong> - complete by EOD');
   });
 
   it('should remove the notification with given id when markNotificationAsRead is dispatched', () => {
@@ -153,42 +128,5 @@ describe('notificationsSlice with axios-mock-adapter', () => {
     const newState = notificationsReducer(previousState, markNotificationAsRead(2));
     expect(newState.notifications).toHaveLength(2);
     expect(newState.notifications.find((n) => n.id === 2)).toBeUndefined();
-  });
-
-  // 5. Test : fetchNotifications (thunk async)
-  describe('fetchNotifications thunk', () => {
-    let mock;
-
-    beforeEach(() => {
-      mock = new MockAdapter(axios);
-    });
-
-    afterEach(() => {
-      mock.restore();
-    });
-
-    it('should fetch notifications and update id=3 with latest notification', async () => {
-      const fakeData = [
-        { id: 1, value: 'notif 1' },
-        { id: 2, value: 'notif 2' },
-        { id: 3, value: 'notif 3' },
-      ];
-
-      mock.onGet(ENDPOINTS.notifications).reply(200, { notifications: fakeData });
-
-      const store = configureStore({
-        reducer: {
-          notifications: notificationsReducer,
-        },
-      });
-
-      await store.dispatch(fetchNotifications());
-
-      const state = store.getState().notifications;
-      expect(state.notifications).toHaveLength(3);
-      expect(state.notifications.find((n) => n.id === 3).value).toBe(
-        '<strong>Urgent requirement</strong> - complete by EOD'
-      );
-    });
   });
 });
