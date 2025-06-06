@@ -84,12 +84,10 @@ describe('notificationsSlice', () => {
     expect(state.notifications).toEqual([]);
   });
 
-  it('should handle showDrawer action', () => {
-    const state = notificationsReducer(
-      { ...initialState, displayDrawer: false },
-      showDrawer(),
-    );
-    expect(state.displayDrawer).toBe(true);
+  it('should set displayDrawer to true when showDrawer is dispatched', () => {
+    const previousState = { notifications: [], displayDrawer: false };
+    const newState = notificationsReducer(previousState, showDrawer());
+    expect(newState.displayDrawer).toBe(true);
   });
 
   it('should not crash if fetchNotifications fails (rejected)', async () => {
@@ -102,12 +100,10 @@ describe('notificationsSlice', () => {
     expect(state.notifications).toEqual([]);
   });
 
-  it('should handle hideDrawer action', () => {
-    const state = notificationsReducer(
-      { ...initialState, displayDrawer: true },
-      hideDrawer(),
-    );
-    expect(state.displayDrawer).toBe(false);
+  it('should set displayDrawer to false when hideDrawer is dispatched', () => {
+    const previousState = { notifications: [], displayDrawer: true };
+    const newState = notificationsReducer(previousState, hideDrawer());
+    expect(newState.displayDrawer).toBe(false);
   });
 
   it('should return a new state object (not mutate previous state)', () => {
