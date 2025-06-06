@@ -21,16 +21,26 @@ export const fetchNotifications = createAsyncThunk(
       const data = response.data;
 
       const updatedNotifications = [];
+      const latestValue = getLatestNotification();
+      let foundLatest = false;
 
       for (const notif of data) {
         if (notif.id === 3) {
-          const latestValue = getLatestNotification();
+          foundLatest = true;
           if (notif.value !== latestValue) {
             updatedNotifications.push({ ...notif, value: latestValue });
             continue;
           }
         }
         updatedNotifications.push(notif);
+      }
+
+      if (!foundLatest) {
+        updatedNotifications.push({
+          id: 3,
+          type: 'default',
+          value: latestValue,
+        });
       }
 
       return updatedNotifications;
