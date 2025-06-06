@@ -15,7 +15,7 @@ const ENDPOINTS = {
 
 export const fetchNotifications = createAsyncThunk(
   'notifications/fetchNotifications',
-  async(_, thunkAPI) => {
+  async() => {
     try {
       const response = await axios.get(ENDPOINTS.notifications);
       const data = response.data.notifications;
@@ -45,7 +45,8 @@ export const fetchNotifications = createAsyncThunk(
 
       return updatedNotifications;
     } catch (error) {
-      return thunkAPI.rejectWithValue('Failed to fetch notifications');
+      console.error("Error fetching notifications:", error);
+      throw error;
     }
   }
 )
