@@ -130,7 +130,7 @@ describe('notificationsSlice with axios-mock-adapter', () => {
   });
 
   it('should fetch notifications and update the state correctly', async () => {
-    mock.onGet('http://localhost:5173/notifications.json').reply(200, mockData);
+    mock.onGet('http://localhost:5173/notifications.json').reply(200, { notifications: mockData });
 
     await store.dispatch(fetchNotifications());
 
@@ -174,7 +174,7 @@ describe('notificationsSlice with axios-mock-adapter', () => {
         { id: 3, value: 'notif 3' },
       ];
 
-      mock.onGet(ENDPOINTS.notifications).reply(200, fakeData);
+      mock.onGet(ENDPOINTS.notifications).reply(200, { notifications: fakeData });
 
       const store = configureStore({
         reducer: {

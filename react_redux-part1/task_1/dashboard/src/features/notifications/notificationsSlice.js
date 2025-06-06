@@ -18,7 +18,7 @@ export const fetchNotifications = createAsyncThunk(
   async(_, thunkAPI) => {
     try {
       const response = await axios.get(ENDPOINTS.notifications);
-      const data = response.data;
+      const data = response.data.notifications;
 
       const updatedNotifications = [];
       const latestValue = getLatestNotification();
