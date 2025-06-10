@@ -15,7 +15,7 @@ const mockData = [
 ];
 
 const prevState = {
-  course: [{ id: 1, name: 'ES6', credit: 60}],
+  courses: [{ id: 1, name: 'ES6', credit: 60}],
 };
 
 let mock;
@@ -39,7 +39,7 @@ describe('courseSlice', () => {
     const mockCourses = mockData;
     mock.onGet(ENDPOINTS.courses).reply(200, { courses: mockCourses });
 
-    const store = configureStore({ reducer: coursesReducer });
+    const store = configureStore({ reducer: { courses: coursesReducer }});
     await store.dispatch(fetchCourses());
 
     const state = store.getState().courses;
