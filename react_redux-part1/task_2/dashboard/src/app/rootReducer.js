@@ -1,7 +1,7 @@
 import coursesReducer from '../features/courses/coursesSlice';
 import authReducer from '../features/auth/authSlice';
 import notificationsReducer from '../features/notifications/notificationsSlice';
-import { combineReducers } from '@reduxjs/toolkit';
+import { combineReducers } from 'redux';
 
 const rootReducer = combineReducers(
   {
