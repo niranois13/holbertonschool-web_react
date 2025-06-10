@@ -3,12 +3,10 @@ import authReducer from '../features/auth/authSlice';
 import notificationsReducer from '../features/notifications/notificationsSlice';
 import { combineReducers } from 'redux';
 
-const rootReducer = combineReducers(
-  {
-    courses: coursesReducer,
+const rootReducer = combineReducers({
     auth: authReducer,
-    notifications: notificationsReducer
-  }
-)
+    notifications: notificationsReducer,
+    courses: coursesReducer,
+  })
 
 export default rootReducer;
