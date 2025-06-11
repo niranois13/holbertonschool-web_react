@@ -1,53 +1,85 @@
-// import { StyleSheet, css } from 'aphrodite';
-import logo from '../../assets/holberton-logo.jpg';
-import { useSelector, useDispatch } from 'react-redux';
-import { logout } from '../../features/auth/authSlice';
+import { render, screen } from '@testing-library/react';
+import Footer from './Footer';
+import { getCurrentYear, getFooterCopy } from '../../utils/utils';
+import { StyleSheetTestUtils } from "aphrodite";
+import { Provider } from 'react-redux';
+import { configureStore } from '@reduxjs/toolkit';
+import authReducer from '../../features/auth/authSlice';
+import coursesReducer from '../../features/courses/coursesSlice';
+import notificationsReducer from '../../features/notifications/notificationsSlice';
 
-// const styles = StyleSheet.create({
-//   header: {
-//     display: 'inline-flex',
-//     alignItems: 'center',
-//     fontSize: '20px',
-//     fontFamily: 'sans-serif',
-//   },
-//   title: {
-//     color: '#e1003c',
-//     fontFamily: "'Roboto', sans-serif",
-//     fontWeight: 'bold',
-//     fontSize: '2.5rem',
-//     margin: 0,
-//   },
-//   logo: {
-//     height: '30vmin',
-//     pointerEvents: 'none',
-//   },
-//   logoutSection: {
-//     marginLeft: 'auto',
-//     fontSize: '1rem',
-//   },
-// });
+beforeEach(() => {
+  StyleSheetTestUtils.suppressStyleInjection();
+});
 
-export default function Header() {
-  const { user, isLoggedIn } = useSelector(state => state.auth);
-  const dispatch = useDispatch();
+afterEach(() => {
+  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+});
 
-  const handleLogOut = (e) => {
-    e.preventDefault();
-    dispatch(logout());
-  };
+export function renderWithProvider(ui, preloadedState = {}) {
+  const store = configureStore({
+    reducer: {
+      auth: authReducer,
+      courses: coursesReducer,
+      notifications: notificationsReducer,
+    },
+    preloadedState,
+  });
 
-  return (
-    <div>
-      <img src={logo} alt="holberton logo" />
-      <h1>School Dashboard</h1>
-      {isLoggedIn && (
-        <div id="logoutSection">
-          Welcome <b>{user.email}</b>{' '}
-          <a href="#" onClick={handleLogOut}>
-            (logout)
-          </a>
-        </div>
-      )}
-    </div>
-  );
+  return render(<Provider store={store}>{ui}</Provider>);
 }
+
+describe('Footer Component', () => {
+  describe('Basic Rendering', () => {
+    test('Renders without crashing', () => {
+      renderWithProvider(<Footer />);
+      const footerParagraph = screen.getByText(`Copyright ${getCurrentYear()} - ${getFooterCopy(true)}`);
+      expect(footerParagraph).toHaveTextContent(/copyright \d{4} - holberton school/i);
+    });
+
+    test('Does not render contact link when user is not logged in', () => {
+      const preloadedState = {
+        auth: { user: {}, isLoggedIn: false },
+      };
+      renderWithProvider(<Footer />, preloadedState);
+      const link = screen.queryByRole('link', { name: /contact us/i });
+      expect(link).not.toBeInTheDocument();
+    });
+
+    test('Renders contact link when user is logged in', () => {
+      const preloadedState = {
+        auth: { user: { email: 'test@email.com' }, isLoggedIn: true },
+      };
+      renderWithProvider(<Footer />, preloadedState);
+      const link = screen.getByRole('link', { name: /contact us/i });
+      expect(link).toBeInTheDocument();
+    });
+  });
+
+  describe('Edge Scenarios', () => {
+    test('Does not render contact link when user email is null', () => {
+      const preloadedState = {
+        auth: { user: { email: null }, isLoggedIn: true },
+      };
+      renderWithProvider(<Footer />, preloadedState);
+      const link = screen.getByRole('link', { name: /contact us/i });
+      expect(link).toBeInTheDocument();
+    });
+
+    test('Does not render contact link when user isLoggedIn is false, even with valid email', () => {
+      const preloadedState = {
+        auth: { user: { email: 'test@email.com' }, isLoggedIn: false },
+      };
+      renderWithProvider(<Footer />, preloadedState);
+      const link = screen.queryByRole('link', { name: /contact us/i });
+      expect(link).not.toBeInTheDocument();
+    });
+  });
+
+  test('Should confirm Footer is a functional component', () => {
+    const FooterPrototype = Object.getOwnPropertyNames(Footer.prototype);
+    expect(FooterPrototype).toEqual(expect.arrayContaining(['constructor']));
+    expect(FooterPrototype).toHaveLength(1);
+    expect(Footer.prototype.__proto__).toEqual({});
+  });
+});

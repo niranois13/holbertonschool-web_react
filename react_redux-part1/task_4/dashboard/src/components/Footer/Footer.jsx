@@ -4,11 +4,12 @@ import { getCurrentYear, getFooterCopy } from '../../utils/utils';
 
 export default function Footer() {
   const user = useSelector((state) => state.auth.user);
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
 
   return (
     <div>
       <p>Copyright {getCurrentYear()} - {getFooterCopy(true)}</p>
-      {user?.isLoggedIn && <a href="#">Contact us</a>}
+      {user && isLoggedIn && <a href="#">Contact us</a>}
     </div>
   );
 }
