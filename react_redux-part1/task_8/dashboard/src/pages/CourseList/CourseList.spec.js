@@ -95,3 +95,38 @@ test('renders fallback when no courses available', () => {
   const noCoursesRow = screen.getByText(/no course available yet/i);
   expect(noCoursesRow).toBeInTheDocument();
 });
+
+import { logout } from '../../features/auth/authSlice';
+
+test('dispatching logout resets courses array', () => {
+  const store = configureStore({
+    reducer: {
+      auth: authReducer,
+      courses: coursesReducer,
+      notifications: notificationsReducer,
+    },
+    preloadedState: {
+      auth: {
+        user: { email: 'test@example.com', password: '12345678' },
+        isLoggedIn: true,
+      },
+      courses: {
+        courses: [
+          { id: 1, name: 'ES6', credit: 60 },
+          { id: 2, name: 'WebPack', credit: 20 },
+        ],
+      },
+    },
+  });
+
+  store.dispatch(logout());
+
+  render(
+    <Provider store={store}>
+      <CourseList />
+    </Provider>
+  );
+
+  const noCoursesRow = screen.getByText(/no course available yet/i);
+  expect(noCoursesRow).toBeInTheDocument();
+});
