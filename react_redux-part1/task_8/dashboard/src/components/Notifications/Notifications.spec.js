@@ -6,8 +6,19 @@ import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from '../../features/auth/authSlice';
 import coursesReducer from '../../features/courses/coursesSlice';
-import notificationsReducer from '../../features/notifications/notificationsSlice';
+import notificationsReducer,  { markNotificationAsRead } from '../../features/notifications/notificationsSlice';
 import axios from 'axios';
+
+jest.mock('../../features/notifications/notificationsSlice', () => {
+  const originalSlice = jest.requireActual('../../features/notifications/notificationsSlice');
+  return {
+    __esModule: true,
+    ...originalSlice,
+    markNotificationAsRead: jest.fn((id) => ({
+      type: 'notifications/markNotificationAsRead', payload: id
+    }))
+  }
+});
 
 jest.mock('axios');
 
@@ -212,27 +223,32 @@ test('Should hide the list of notifications whenever the "handleHideDrawer" is c
   expect(screen.queryByText('Here is the list of notifications')).not.toBeInTheDocument();
 });
 
-test.skip('Should rerender when prop values change', () => {
-  const markAsReadMock = jest.fn();
-  const initialProps = {
-    displayDrawer: true,
-    notifications: [
-      { id: 1, type: 'default', value: 'New notification' },
-      { id: 2, type: 'urgent', value: 'Urgent notification' }
-    ],
-    markNotificationAsRead: markAsReadMock,
+test('It should log to the console the "Notification id has been marked as read" with the correct notification item id', () => {
+  const { store, rerender } = renderWithProvider(<Notifications />, preloadedState);
+  const firstListItemElement = screen.getAllByRole('listitem')[0];
+  fireEvent.click(firstListItemElement)
+  expect(markNotificationAsRead).toHaveBeenCalledWith(1);
+
+  const newState = {
+    ...preloadedState,
+    notifications: {
+      ...preloadedState.notifications,
+      notifications: preloadedState.notifications.notifications.filter(n => n.id !== 1),
+    },
   };
-  const { rerender } = render(<Notifications {...initialProps} />);
-  const listItems = screen.getAllByRole('listitem');
-  expect(listItems).toHaveLength(2);
-  fireEvent.click(screen.getByText('New notification'));
-  expect(markAsReadMock).toHaveBeenCalledWith(1);
-  const updatedProps = {
-    ...initialProps,
-    notifications: [
-      { id: 2, type: 'urgent', value: 'Urgent notification' }
-    ]
-  };
-  rerender(<Notifications {...updatedProps} />);
-  expect(screen.getAllByRole('listitem')).toHaveLength(1);
+
+  rerender(
+    <Provider store={configureStore({
+      reducer: {
+        auth: authReducer,
+        courses: coursesReducer,
+        notifications: notificationsReducer,
+      },
+      preloadedState: newState
+    })}>
+      <Notifications />
+    </Provider>
+  );
+
+  expect(screen.queryByText('New course available')).not.toBeInTheDocument();
 });
