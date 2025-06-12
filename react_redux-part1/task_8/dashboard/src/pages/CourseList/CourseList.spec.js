@@ -130,3 +130,27 @@ test('dispatching logout resets courses array', () => {
   const noCoursesRow = screen.getByText(/no course available yet/i);
   expect(noCoursesRow).toBeInTheDocument();
 });
+
+test('dispatching logout resets courses array in the store', () => {
+  const store = configureStore({
+    reducer: { auth: authReducer, courses: coursesReducer, notifications: notificationsReducer },
+    preloadedState: {
+      auth: { user: { email: 'test@example.com', password: '12345678' }, isLoggedIn: true },
+      courses: { courses: [ { id: 1, name: 'ES6', credit: 60 }, { id: 2, name: 'WebPack', credit: 20 } ] }
+    }
+  });
+
+  expect(store.getState().courses.courses).toHaveLength(2);
+
+  store.dispatch(logout());
+
+  expect(store.getState().courses.courses).toHaveLength(0);
+
+  render(
+    <Provider store={store}>
+      <CourseList />
+    </Provider>
+  );
+
+  expect(screen.getByText(/no course available yet/i)).toBeInTheDocument();
+});

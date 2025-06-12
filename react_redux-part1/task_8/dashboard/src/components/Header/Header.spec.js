@@ -4,6 +4,7 @@ import { StyleSheetTestUtils } from "aphrodite";
 import authReducer from '../../features/auth/authSlice';
 import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
+import { login } from '../../features/auth/authSlice';
 
 let store;
 
@@ -53,6 +54,27 @@ test('Should contain a <p/> element with specific text, <h1/>, and an <img/>', (
   expect(headingElement).toHaveStyle({ color: convertHexToRGBA('#e1003c') })
   expect(imgElement).toBeInTheDocument();
 });
+
+test('Dispatch login action updates store and displays welcome message', () => {
+  store.dispatch(login({ email: 'newuser@test.com', password: 'abc12345' }));
+
+  renderWithProvider(<Header />);
+
+  expect(screen.getByText('Welcome')).toBeInTheDocument();
+  expect(screen.getByText('newuser@test.com')).toBeInTheDocument();
+});
+
+test('Clicking logout dispatches logout action and sets isLoggedIn to false', () => {
+  renderWithProvider(<Header />);
+
+  fireEvent.click(screen.getByRole('link', { name: /logout/i }));
+
+  const state = store.getState();
+  expect(state.auth.isLoggedIn).toBe(false);
+
+  expect(screen.queryByRole('link', { name: /logout/i })).not.toBeInTheDocument();
+});
+
 
 test('Should confirm Header is a functional component', () => {
   const HeaderPrototype = Object.getOwnPropertyNames(Header.prototype);
