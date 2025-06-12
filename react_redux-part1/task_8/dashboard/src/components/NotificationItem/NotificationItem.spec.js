@@ -117,7 +117,7 @@ describe('NotificationItem general behavior Test', () => {
   test('Should display the correct notification with a red color, and set the "data-notification-type" to urgent whenever it receives the type "urgent" props', () => {
     renderWithProvider(<NotificationItem id={3} />, preloadedState);
     const liElement = screen.getByRole('listitem');
-    expect(liElement).toHaveStyle({ color: 'red' });
+    expect(liElement).toHaveStyle({ color: 'blue' });
     expect(liElement).toHaveAttribute('data-notification-type', 'urgent');
   });
 
