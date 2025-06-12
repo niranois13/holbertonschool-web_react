@@ -224,7 +224,7 @@ test('Should hide the list of notifications whenever the "handleHideDrawer" is c
 });
 
 test('It should log to the console the "Notification id has been marked as read" with the correct notification item id', () => {
-  const { store, rerender } = renderWithProvider(<Notifications />, preloadedState);
+  const { rerender } = renderWithProvider(<Notifications />, preloadedState);
   const firstListItemElement = screen.getAllByRole('listitem')[0];
   fireEvent.click(firstListItemElement)
   expect(markNotificationAsRead).toHaveBeenCalledWith(1);
