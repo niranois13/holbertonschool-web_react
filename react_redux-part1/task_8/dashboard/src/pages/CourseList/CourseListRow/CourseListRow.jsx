@@ -1,24 +1,26 @@
-function CourseListRow({ isHeader, textFirstCell, textSecondCell }) {
+import { css } from 'aphrodite';
+
+function CourseListRow({ isHeader, textFirstCell, textSecondCell, style }) {
   if (isHeader) {
     if (textSecondCell === null || textSecondCell === undefined) {
       return (
         <tr>
-          <th>{textFirstCell}</th>
+          <th className={css(style)} colSpan="2">{textFirstCell}</th>
         </tr>
       );
     } else {
       return (
         <tr>
-          <th>{textFirstCell}</th>
-          <th>{textSecondCell}</th>
+          <th className={css(style)}>{textFirstCell}</th>
+          <th className={css(style)}>{textSecondCell}</th>
         </tr>
       );
     }
   } else {
     return (
       <tr>
-        <td>{textFirstCell}</td>
-        <td>{textSecondCell}</td>
+        <td className={css(style)}>{textFirstCell}</td>
+        <td className={css(style)}>{textSecondCell}</td>
       </tr>
     );
   }
