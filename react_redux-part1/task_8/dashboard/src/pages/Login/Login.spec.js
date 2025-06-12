@@ -132,4 +132,19 @@ describe('Login Component Tests', () => {
     expect(emailInput.value).toBe('newemail@test.com');
     expect(passwordInput.value).toBe('newpassword');
   });
+
+  test('Should not log in with invalid credentials', () => {
+  renderWithProvider(<Login />);
+  const emailInput = screen.getByLabelText(/email/i);
+  const passwordInput = screen.getByLabelText(/password/i);
+  const submitButton = screen.getByRole('button', { name: /ok/i });
+
+  fireEvent.change(emailInput, { target: { value: 'invalid-email' } });
+  fireEvent.change(passwordInput, { target: { value: '123' } });
+  
+  fireEvent.click(submitButton);
+
+  const state = store.getState();
+  expect(state.auth.isLoggedIn).toBe(false);
+});
 });
