@@ -4,8 +4,9 @@ import closeIcon from "../../assets/close-icon.png";
 import NotificationItem from "../NotificationItem/NotificationItem";
 import {
   fetchNotifications,
+  markNotificationAsRead,
 } from "../../features/notifications/notificationsSlice";
-import { makeGetFilteredNotifications } from "../../features/selectors/notificationSelector";
+import { getFilteredNotifications } from "../../features/selectors/notificationSelector";
 import "./Notifications.css";
 
 const Notifications = memo(function Notifications() {
@@ -14,8 +15,7 @@ const Notifications = memo(function Notifications() {
 
   const [currentFilter, setCurrentFilter] = useState("all");
 
-  const getFilteredNotifications = makeGetFilteredNotifications();
-  const filteredNotifications = useSelector(state =>
+  const filteredNotifications = useSelector((state) =>
     getFilteredNotifications(state, currentFilter)
   );
 
@@ -28,6 +28,8 @@ const Notifications = memo(function Notifications() {
   const handleToggleDrawer = () => {
     drawerRef.current.classList.toggle("visible");
   };
+
+  const handleMarkAsRead = (id) => dispatch(markNotificationAsRead(id));
 
   const handleSetFilterUrgent = () => {
     setCurrentFilter((prevFilter) => (prevFilter === "urgent" ? "all" : "urgent"));
@@ -63,6 +65,8 @@ const Notifications = memo(function Notifications() {
                   id={notification.id}
                   type={notification.type}
                   value={notification.value}
+                  html={notification.html}
+                  markAsRead={() => handleMarkAsRead(notification.id)}
                 />
               ))}
             </ul>
