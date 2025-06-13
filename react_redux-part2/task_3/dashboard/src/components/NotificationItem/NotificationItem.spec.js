@@ -1,123 +1,88 @@
+
 import { render, screen, fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import NotificationItem from './NotificationItem';
+import * as notificationsSlice from '../../features/notifications/notificationsSlice';
 import { Provider } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit';
-import authReducer from '../../features/auth/authSlice';
-import coursesReducer from '../../features/courses/coursesSlice';
-import notificationsReducer, { markNotificationAsRead } from '../../features/notifications/notificationsSlice';
-import { StyleSheetTestUtils } from "aphrodite";
+import configureStore from 'redux-mock-store';
+import { markNotificationAsRead } from '../../features/notifications/notificationsSlice';
 
-jest.mock('../../features/notifications/notificationsSlice', () => {
-  const originalSlice = jest.requireActual('../../features/notifications/notificationsSlice');
-  return {
-    __esModule: true,
-    ...originalSlice,
-    markNotificationAsRead: jest.fn((id) => ({
-      type: 'notifications/markNotificationAsRead', payload: id
-    }))
-  }
-});
+const mockStore = configureStore([]);
 
-beforeEach(() => {
-  StyleSheetTestUtils.suppressStyleInjection();
-});
+describe('NotificationItem Component', () => {
+  const store = mockStore([]);
 
-
-afterEach(() => {
-  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-});
-
-const preloadedState = {
-  auth: {
-    user: {
-      email: 'test@testing.tst',
-      password: '12345678'
-    },
-    isLoggedIn: true
-  },
-  notifications: {
-    notifications: [
-      {
-        id: 1,
-        type: 'default',
-        value: 'New course available'
-      },
-      {
-        id: 2,
-        type: 'urgent',
-        value: 'New resume available'
-      },
-      {
-        id: 3,
-        type: 'urgent',
-        html: {
-          __html: '<strong>Urgent requirement</strong> - complete by EOD'
-        }
-      }
-    ],
-    displayDrawer: true
-  },
-  courses: {
-    courses: [
-      {
-        id: 1, name: 'ES6', credit: 60
-      },
-      {
-        id: 2, name: 'Webpack', credit: 20
-      },
-      {
-        id: 3, name: 'React', credit: 40
-      }
-    ]
-  }
-}
-
-function renderWithProvider(ui, preloadedState = {}) {
-  const store = configureStore({
-    reducer: {
-      auth: authReducer,
-      courses: coursesReducer,
-      notifications: notificationsReducer,
-    },
-    preloadedState,
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
-  const renderResult = render(<Provider store={store}>{ui}</Provider>);
+  it('renders with default type and value', () => {
+    render(
+      <Provider store={store}>
+      <NotificationItem id={1} type="default" value="New course available" />
+      </Provider>
+    );
 
-  const rerenderWithNewState = (newUI, newState) => {
-    const newStore = configureStore({
-      reducer: {
-        auth: authReducer,
-        courses: coursesReducer,
-        notifications: notificationsReducer,
-      },
-      preloadedState: newState,
-    });
-
-    renderResult.rerender(<Provider store={newStore}>{newUI}</Provider>);
-  };
-
-  return { store, ...renderResult, rerenderWithNewState };
-}
-
-describe('NotificationItem Tests', () => {
-  test('The NotificationItem is rendered without crashing', () => {
-    renderWithProvider(<NotificationItem />, preloadedState);
+    const listItem = screen.getByText(/new course available/i);
+    expect(listItem).toBeInTheDocument();
+    expect(listItem).toHaveStyle('color: blue');
+    expect(listItem).toHaveAttribute('data-notification-type', 'default');
   });
 
-  test('Should return true if the NotificationItem component is a functional component', () => {
-    expect(typeof NotificationItem.type).toBe('function');
-    expect(NotificationItem.$$typeof.toString()).toBe('Symbol(react.memo)');
-    expect(NotificationItem.type.prototype?.isReactComponent).toBeUndefined();
+  it('renders with urgent type and value', () => {
+    render(
+      <Provider store={store}>
+      <NotificationItem id={2} type="urgent" value="Server is down" />
+      </Provider>
+    );
+
+    const listItem = screen.getByText(/server is down/i);
+    expect(listItem).toBeInTheDocument();
+    expect(listItem).toHaveStyle('color: red');
+    expect(listItem).toHaveAttribute('data-notification-type', 'urgent');
+  });
+
+  it('dispatches markNotificationAsRead on click', () => {
+    store.dispatch = jest.fn();
+
+    render(
+      <Provider store={store}>
+      <NotificationItem id={3} type="default" value="Assignment due" />
+      </Provider>
+    );
+
+    const item = screen.getByText(/assignment due/i);
+    fireEvent.click(item);
+
+    expect(store.dispatch).toHaveBeenCalledWith(
+      notificationsSlice.markNotificationAsRead(3)
+    );
+  });
+
+  it('does not crash with empty value', () => {
+    render(
+      <Provider store={store}>
+      <NotificationItem id={4} type="default" value="" />
+      </Provider>
+    );
+    const listItem = screen.getByRole('listitem');
+    expect(listItem).toBeInTheDocument();
   });
 });
 
-describe('NotificationItem general behavior Test', () => {
-  test('It should log to the console the "Notification id has been marked as read" with the correct notification item id', () => {
-    renderWithProvider(<NotificationItem id={1} />, preloadedState);
-    const firstListItemElement = screen.getAllByRole('listitem')[0];
-    fireEvent.click(firstListItemElement)
-    expect(markNotificationAsRead).toHaveBeenCalledWith(1);
+describe('NotificationItem Integration Test', () => {
+  it('dispatches correct action with redux store on click', () => {
+    const store = mockStore({});
+
+    render(
+      <Provider store={store}>
+        <NotificationItem id={10} type="urgent" value="Check the logs!" />
+      </Provider>
+    );
+
+    const item = screen.getByText(/check the logs!/i);
+    fireEvent.click(item);
+
+    const actions = store.getActions();
+    expect(actions).toContainEqual(markNotificationAsRead(10));
   });
 });
