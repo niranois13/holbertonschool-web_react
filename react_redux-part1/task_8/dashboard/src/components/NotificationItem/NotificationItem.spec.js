@@ -7,7 +7,6 @@ import authReducer from '../../features/auth/authSlice';
 import coursesReducer from '../../features/courses/coursesSlice';
 import notificationsReducer, { markNotificationAsRead } from '../../features/notifications/notificationsSlice';
 import { StyleSheetTestUtils } from "aphrodite";
-import { Profiler } from 'react';
 
 jest.mock('../../features/notifications/notificationsSlice', () => {
   const originalSlice = jest.requireActual('../../features/notifications/notificationsSlice');
@@ -147,22 +146,6 @@ describe('NotificationItem - Memo behavior', () => {
   afterEach(() => {
     consoleLogSpy.mockRestore();
   });
-
-  test('Should not re-render with same props', () => {
-    let renderCount = 0;
-
-    const { rerender, store } = renderWithProvider(<NotificationItem id={1} />, preloadedState);
-
-    const initialRenderCount = renderCount;
-
-    rerender(
-      <Provider store={store}>
-      <NotificationItem id={1} />, preloadedState
-      </Provider>
-    );
-    expect(renderCount - initialRenderCount).toBe(0);
-  });
-
 
   test('Should re-render and update displayed value when props change', () => {
     const { rerenderWithNewState } = renderWithProvider(<NotificationItem id={1} />, preloadedState);
