@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import Notifications from "./Notifications";
 import * as notificationsSlice from "../../features/notifications/notificationsSlice";
 import * as selectors from "../../features/selectors/notificationSelector";
@@ -11,8 +11,8 @@ describe("Notifications Component", () => {
   let store;
 
   const sampleNotifications = [
-    { id: 1, type: "default", value: "Default notif" },
-    { id: 2, type: "urgent", value: "Urgent notif" },
+    { id: 1, type: "default", value: "Default notif", isRead: "false" },
+    { id: 2, type: "urgent", value: "Urgent notif", isRead: "false" },
   ];
 
   beforeEach(() => {
@@ -65,7 +65,6 @@ describe("Notifications Component", () => {
     expect(screen.getByText(/your notifications/i)).toBeInTheDocument();
 
     // Notifications drawer is visible by default with buttons and notifications list
-    expect(screen.getByText("📬 All")).toBeInTheDocument();
     expect(screen.getByText("‼️ Urgent")).toBeInTheDocument();
     expect(screen.getByText("📄 Default")).toBeInTheDocument();
 
@@ -95,7 +94,7 @@ describe("Notifications Component", () => {
     expect(screen.getByText(/loading/i)).toBeInTheDocument();
   });
 
-  it("filters notifications when clicking filter buttons", () => {
+  it("filters notifications when clicking filter buttons", async () => {
     store.dispatch = jest.fn();
 
     render(
@@ -104,41 +103,45 @@ describe("Notifications Component", () => {
       </Provider>
     );
 
-    // Initially all notifications shown
     expect(screen.getByText("Default notif")).toBeInTheDocument();
     expect(screen.getByText("Urgent notif")).toBeInTheDocument();
 
     // Click urgent filter button
     fireEvent.click(screen.getByText("‼️ Urgent"));
-    expect(selectors.getFilteredNotifications).toHaveBeenLastCalledWith(
-      expect.anything(),
-      "urgent"
-    );
-
-    // Urgent notification should be visible, default should not
-    expect(screen.queryByText("Default notif")).not.toBeInTheDocument();
-    expect(screen.getByText("Urgent notif")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByText("Default notif")).not.toBeInTheDocument();
+      expect(screen.getByText("Urgent notif")).toBeInTheDocument();
+    });
 
     // Click default filter button
     fireEvent.click(screen.getByText("📄 Default"));
-    expect(selectors.getFilteredNotifications).toHaveBeenLastCalledWith(
-      expect.anything(),
-      "default"
-    );
+    await waitFor(() => {
+      expect(screen.getByText("Default notif")).toBeInTheDocument();
+      expect(screen.queryByText("Urgent notif")).not.toBeInTheDocument();
+    });
 
-    expect(screen.getByText("Default notif")).toBeInTheDocument();
-    expect(screen.queryByText("Urgent notif")).not.toBeInTheDocument();
+    // Click default again to show all
+    fireEvent.click(screen.getByText("📄 Default"));
+    await waitFor(() => {
+      expect(screen.getByText("Default notif")).toBeInTheDocument();
+      expect(screen.getByText("Urgent notif")).toBeInTheDocument();
+    });
 
-    // Click all filter button
-    fireEvent.click(screen.getByText("📬 All"));
-    expect(selectors.getFilteredNotifications).toHaveBeenLastCalledWith(
-      expect.anything(),
-      "all"
-    );
+    // Click urgent again to filter
+    fireEvent.click(screen.getByText("‼️ Urgent"));
+    await waitFor(() => {
+      expect(screen.queryByText("Default notif")).not.toBeInTheDocument();
+      expect(screen.getByText("Urgent notif")).toBeInTheDocument();
+    });
 
-    expect(screen.getByText("Default notif")).toBeInTheDocument();
-    expect(screen.getByText("Urgent notif")).toBeInTheDocument();
+    // Click urgent again to show all
+    fireEvent.click(screen.getByText("‼️ Urgent"));
+    await waitFor(() => {
+      expect(screen.getByText("Default notif")).toBeInTheDocument();
+      expect(screen.getByText("Urgent notif")).toBeInTheDocument();
+    });
   });
+
 
   it("dispatches markNotificationAsRead when clicking a notification item", () => {
     store.dispatch = jest.fn();

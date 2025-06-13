@@ -31,11 +31,13 @@ const Notifications = memo(function Notifications() {
 
   const handleMarkAsRead = (id) => dispatch(markNotificationAsRead(id));
 
-  const handleSetFilterUrgent = () => setCurrentFilter("urgent");
-  const handleSetFilterDefault = () => setCurrentFilter("default");
-  const handleSetFilterAll = () => setCurrentFilter("all");
+  const handleSetFilterUrgent = () => {
+    setCurrentFilter((prevFilter) => (prevFilter === "urgent" ? "all" : "urgent"));
+  };
 
-  console.log("Notifications render");
+  const handleSetFilterDefault = () => {
+    setCurrentFilter((prevFilter) => (prevFilter === "default" ? "all" : "default"));
+  };
 
   return (
     <>
@@ -44,7 +46,6 @@ const Notifications = memo(function Notifications() {
       </div>
       <div className="Notifications visible" ref={drawerRef}>
         <div style={{ display: "flex", gap: "0.5rem", marginBottom: "10px" }}>
-          <button onClick={handleSetFilterAll}>📬 All</button>
           <button onClick={handleSetFilterUrgent}>‼️ Urgent</button>
           <button onClick={handleSetFilterDefault}>📄 Default</button>
         </div>
