@@ -17,9 +17,8 @@ export const fetchNotifications = createAsyncThunk(
   async () => {
     try {
       const response = await axios.get(ENDPOINTS.notifications);
-      const rawNotifications = response.data.notifications || [];
+      const rawNotifications = response.data || [];
 
-      // Transform and filter only unread notifications
       const transformedNotifications = rawNotifications
         .filter(notification => notification.context?.isRead === false)
         .map(notification => ({
