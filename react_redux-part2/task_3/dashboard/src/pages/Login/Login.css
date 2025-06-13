@@ -1,0 +1,30 @@
+.login-body {
+    display: flex;
+    flex-direction: column;
+    height: 60vh;
+    padding: 20px 20px 20px 40px;
+    border-top: 5px solid red;
+    font-family: Roboto, sans-serif;
+}
+
+.login-paragraph {
+    font-size: 1.3rem;
+    margin: 0;
+}
+
+.login-form {
+    margin: 20px 0;
+    font-size: 1.2rem;
+}
+
+.login-label {
+    padding-right: 10px;
+}
+
+.login-input {
+    margin-right: 10px;
+}
+
+.login-button {
+    cursor: pointer;
+}

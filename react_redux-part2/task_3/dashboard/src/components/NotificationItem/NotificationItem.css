@@ -1,0 +1,11 @@
+.notification-item {
+    cursor: pointer;
+}
+
+.notification-item.urgent {
+    color: red;
+}
+
+.notification-item.default {
+    color: blue;
+}

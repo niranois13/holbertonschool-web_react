@@ -1,0 +1,7 @@
+.footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-style: italic;
+    font-family: sans-serif;
+}

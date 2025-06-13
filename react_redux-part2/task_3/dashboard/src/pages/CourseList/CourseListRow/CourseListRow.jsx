@@ -1,4 +1,4 @@
-import { css } from 'aphrodite';
+import './CourseListRow.css';
 
 function CourseListRow({
   id,
@@ -9,25 +9,27 @@ function CourseListRow({
   isChecked,
   onChange,
 }) {
+  const cellClass = style?.className || 'course-cell';
+
   if (isHeader) {
     if (textSecondCell === null || textSecondCell === undefined) {
       return (
         <tr>
-          <th className={css(style)} colSpan="2">{textFirstCell}</th>
+          <th className={cellClass} colSpan="2">{textFirstCell}</th>
         </tr>
       );
     } else {
       return (
         <tr>
-          <th className={css(style)}>{textFirstCell}</th>
-          <th className={css(style)}>{textSecondCell}</th>
+          <th className={cellClass}>{textFirstCell}</th>
+          <th className={cellClass}>{textSecondCell}</th>
         </tr>
       );
     }
   } else {
     return (
       <tr>
-        <td className={css(style)}>
+        <td className={cellClass}>
           <input
             type="checkbox"
             checked={isChecked}
@@ -36,7 +38,7 @@ function CourseListRow({
           />
           {textFirstCell}
         </td>
-        <td className={css(style)}>{textSecondCell}</td>
+        <td className={cellClass}>{textSecondCell}</td>
       </tr>
     );
   }

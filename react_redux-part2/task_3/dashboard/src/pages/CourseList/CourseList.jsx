@@ -1,24 +1,8 @@
-import { StyleSheet, css } from 'aphrodite';
 import { useSelector, useDispatch } from 'react-redux';
 import CourseListRow from './CourseListRow/CourseListRow';
 import WithLogging from '../../components/HOC/WithLogging';
 import { selectCourse, unSelectCourse } from '../../features/courses/coursesSlice';
-
-const styles = StyleSheet.create({
-  courses: {
-    margin: '130px auto',
-    width: '90%',
-    height: '33vh',
-  },
-  table: {
-    width: '100%',
-    borderCollapse: 'collapse',
-    border: '2px solid rgb(161, 161, 161)',
-  },
-  thtd: {
-    border: '2px solid rgb(161, 161, 161)',
-  },
-});
+import './CourseList.css';
 
 function CourseList() {
   const dispatch = useDispatch();
@@ -33,28 +17,28 @@ function CourseList() {
   };
 
   return (
-    <div className={css(styles.courses)}>
-      <table id="CourseList" className={css(styles.table)}>
+    <div className="course-list-container">
+      <table id="CourseList" className="course-table">
         <thead>
           {courses.length > 0 ? (
             <>
               <CourseListRow
                 textFirstCell="Available courses"
                 isHeader={true}
-                style={styles.thtd}
+                style={{ className: 'course-thtd' }}
               />
               <CourseListRow
                 textFirstCell="Course name"
                 textSecondCell="Credit"
                 isHeader={true}
-                style={styles.thtd}
+                style={{ className: 'course-thtd' }}
               />
             </>
           ) : (
             <CourseListRow
               isHeader={true}
               textFirstCell="No course available yet"
-              style={styles.thtd}
+              style={{ className: 'course-thtd' }}
             />
           )}
         </thead>
@@ -68,7 +52,7 @@ function CourseList() {
                 textSecondCell={course.credit}
                 isChecked={course.isSelected}
                 onChange={onChangeRow}
-                style={styles.thtd}
+                style={{ className: 'course-thtd' }}
               />
             ))}
           </tbody>

@@ -24,8 +24,7 @@ describe('NotificationItem Component', () => {
 
     const listItem = screen.getByText(/new course available/i);
     expect(listItem).toBeInTheDocument();
-    expect(listItem).toHaveStyle('color: blue');
-    expect(listItem).toHaveAttribute('data-notification-type', 'default');
+    expect(listItem).toHaveClass('default');
   });
 
   it('renders with urgent type and value', () => {
@@ -37,8 +36,7 @@ describe('NotificationItem Component', () => {
 
     const listItem = screen.getByText(/server is down/i);
     expect(listItem).toBeInTheDocument();
-    expect(listItem).toHaveStyle('color: red');
-    expect(listItem).toHaveAttribute('data-notification-type', 'urgent');
+    expect(listItem).toHaveClass('urgent');
   });
 
   it('dispatches markNotificationAsRead on click', () => {
