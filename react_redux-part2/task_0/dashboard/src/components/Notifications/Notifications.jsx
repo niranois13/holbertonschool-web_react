@@ -51,19 +51,15 @@ const styles = StyleSheet.create({
 
 const Notifications = memo(function Notifications() {
   const dispatch = useDispatch();
-
-  const notifications = useSelector(
-    (state) => state.notifications.notifications,
-    shallowEqual
-  );
-
+  const notifications = useSelector((state) => state.notifications.notifications, shallowEqual);
   const notificationsRef = useRef();
 
   const handleToggleDrawer = () => {
     if (notificationsRef.current) {
       notificationsRef.current.classList.toggle(css(styles.visible));
     }
-  }
+  };
+
   const handleMarkAsRead = (id) => dispatch(markNotificationAsRead(id));
 
   return (
