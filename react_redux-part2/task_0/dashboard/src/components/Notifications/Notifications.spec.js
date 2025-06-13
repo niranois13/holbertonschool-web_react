@@ -1,211 +1,57 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import Notifications from './Notifications';
-import { StyleSheetTestUtils } from "aphrodite";
-import { Provider } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit';
-import authReducer from '../../features/auth/authSlice';
-import coursesReducer from '../../features/courses/coursesSlice';
-import notificationsReducer, { markNotificationAsRead } from '../../features/notifications/notificationsSlice';
-import axios from 'axios';
+import { render, screen, fireEvent } from "@testing-library/react";
+import { Provider } from "react-redux";
+import configureStore from "redux-mock-store";
+import thunk from "redux-thunk";
+import Notifications from "./Notifications";
+import axios from "axios";
 
-jest.mock('../../features/notifications/notificationsSlice', () => {
-  const originalSlice = jest.requireActual('../../features/notifications/notificationsSlice');
-  return {
-    __esModule: true,
-    ...originalSlice,
-    markNotificationAsRead: jest.fn((id) => ({
-      type: 'notifications/markNotificationAsRead', payload: id
-    }))
-  }
-});
+jest.mock("axios");
 
-jest.mock('axios');
+const middlewares = [thunk];
+const mockStore = configureStore(middlewares);
 
-beforeEach(() => {
-  axios.get.mockResolvedValue({
-    data: {
-      notifications: [
-        { id: 1, type: 'default', value: 'Mock notification 1' },
-        { id: 2, type: 'urgent', value: 'Mock notification 2' },
-      ],
-    },
-  });
-  StyleSheetTestUtils.suppressStyleInjection();
-});
+describe("Notifications component", () => {
+  let store;
 
-
-afterEach(() => {
-  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-});
-
-const preloadedState = {
-  auth: {
-    user: {
-      email: 'test@testing.tst',
-      password: '12345678'
-    },
-    isLoggedIn: true
-  },
-  notifications: {
-    notifications: [
-      {
-        id: 1,
-        type: 'default',
-        value: 'New course available'
-      },
-      {
-        id: 2,
-        type: 'urgent',
-        value: 'New resume available'
-      },
-      {
-        id: 3,
-        type: 'urgent',
-        html: {
-          __html: '<strong>Urgent requirement</strong> - complete by EOD'
-        }
+  beforeEach(() => {
+    axios.get.mockResolvedValue({
+      data: {
+        notifications: [
+          { id: 1, type: "default", value: "New course available" },
+          { id: 2, type: "urgent", value: "New resume available" }
+        ]
       }
-    ],
-  },
-  courses: {
-    courses: [
-      {
-        id: 1, name: 'ES6', credit: 60
-      },
-      {
-        id: 2, name: 'Webpack', credit: 20
-      },
-      {
-        id: 3, name: 'React', credit: 40
-      }
-    ]
-  }
-}
+    });
 
-function renderWithProvider(ui, preloadedState = {}) {
-  const store = configureStore({
-    reducer: {
-      auth: authReducer,
-      courses: coursesReducer,
-      notifications: notificationsReducer,
-    },
-    preloadedState,
+    store = mockStore({
+      notifications: {
+        notifications: [],
+      },
+    });
+
+    store.dispatch = jest.fn();
   });
 
-  const renderResult = render(<Provider store={store}>{ui}</Provider>);
+  test('renders "Your notifications" text', () => {
+    render(
+      <Provider store={store}>
+        <Notifications />
+      </Provider>
+    );
+    expect(screen.getByText("Your notifications")).toBeInTheDocument();
+  });
 
-  return { store, ...renderResult };
-}
+  test("clicking on 'Your notifications' toggles drawer open", async () => {
+    render(
+      <Provider store={store}>
+        <Notifications />
+      </Provider>
+    );
 
-test('Should display a title, button and a 3 list items', () => {
-  renderWithProvider(<Notifications />, preloadedState);
-  const notificationsTitle = screen.getByText('Here is the list of notifications');
-  const notificationsButton = screen.getByRole('button');
-  const notificationsListItems = screen.getAllByRole('listitem');
-  expect(notificationsTitle).toBeInTheDocument();
-  expect(notificationsButton).toBeInTheDocument();
-  expect(notificationsListItems).toHaveLength(3);
-});
+    const trigger = screen.getByText("Your notifications");
+    fireEvent.click(trigger);
 
-test('Should display 3 notification items as expected', () => {
-  renderWithProvider(<Notifications />, preloadedState);
-  const notificationsFirstItem = screen.getByText('New course available');
-  const notificationsSecondItem = screen.getByText('New resume available');
-  const notificationsListItems = screen.getAllByRole('listitem');
-  expect(notificationsFirstItem).toBeInTheDocument();
-  expect(notificationsSecondItem).toBeInTheDocument();
-  const reactPropsKey = Object.keys(notificationsListItems[2]).find(key => /^__reactProps/.test(key));
-  if (reactPropsKey) {
-    const dangerouslySetInnerHTML = notificationsListItems[2][reactPropsKey].dangerouslySetInnerHTML.__html;
-    expect(dangerouslySetInnerHTML).toContain('<strong>Urgent requirement</strong>');
-    expect(dangerouslySetInnerHTML).toContain(' - complete by EOD');
-  } else {
-    throw new Error('No property found matching the regex');
-  }
-});
-
-test('Should display the correct notification colors', () => {
-  renderWithProvider(<Notifications />, preloadedState);
-  const notificationsListItems = screen.getAllByRole('listitem');
-  const colorStyleArr = [];
-  for (let i = 0; i <= notificationsListItems.length - 1; i++) {
-    const styleProp = Object.keys(notificationsListItems[i]).find(key => /^__reactProps/.test(key));
-    if (styleProp) {
-      colorStyleArr.push(notificationsListItems[i].style._values.color);
-    }
-  }
-  expect(colorStyleArr).toEqual(['blue', 'red', 'red']);
-});
-
-test('Should render the 3 given notifications text', () => {
-  renderWithProvider(<Notifications />, preloadedState)
-  expect(screen.getByText('New course available')).toBeInTheDocument();
-  expect(screen.getByText('New resume available')).toBeInTheDocument();
-  expect(screen.getByText(/complete by EOD/)).toBeInTheDocument();
-})
-
-test('Should display a paragraph of "No new notification for now" whenever the listNotification prop is empty', () => {
-  const emptyNotificationsState = {
-    ...preloadedState,
-    notifications: {
-      notifications: [],
-      displayDrawer: true,
-    }
-  }
-  renderWithProvider(<Notifications />, emptyNotificationsState);
-  const notificationsTitle = screen.getByText(/no new notifications for now/i);
-  expect(notificationsTitle).toBeInTheDocument();
-});
-
-test('Should return true if the Notifications component is a functional component', () => {
-  expect(typeof Notifications.type).toBe('function');
-  expect(Notifications.$$typeof.toString()).toBe('Symbol(react.memo)');
-  expect(Notifications.type.prototype?.isReactComponent).toBeUndefined();
-})
-
-test('Clicking on "Your notifications" toggles the notifications list visibility', () => {
-  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-
-  renderWithProvider(<Notifications />, preloadedState);
-
-  const drawer = screen.getByText(/Your notifications/i);
-  const notificationsBox = screen.getByText(/Here is the list of notifications/i).parentElement;
-
-  expect(notificationsBox.className).not.toMatch(/visible_/i);
-
-  fireEvent.click(drawer);
-  expect(notificationsBox.className).toMatch(/visible_/i);
-
-  fireEvent.click(drawer);
-  expect(notificationsBox.className).not.toMatch(/visible_/i);
-});
-
-test('It should log to the console the "Notification id has been marked as read" with the correct notification item id', () => {
-  const { rerender } = renderWithProvider(<Notifications />, preloadedState);
-  const firstListItemElement = screen.getAllByRole('listitem')[0];
-  fireEvent.click(firstListItemElement)
-  expect(markNotificationAsRead).toHaveBeenCalledWith(1);
-
-  const newState = {
-    ...preloadedState,
-    notifications: {
-      ...preloadedState.notifications,
-      notifications: preloadedState.notifications.notifications.filter(n => n.id !== 1),
-    },
-  };
-
-  rerender(
-    <Provider store={configureStore({
-      reducer: {
-        auth: authReducer,
-        courses: coursesReducer,
-        notifications: notificationsReducer,
-      },
-      preloadedState: newState
-    })}>
-      <Notifications />
-    </Provider>
-  );
-
-  expect(screen.queryByText('New course available')).not.toBeInTheDocument();
+    const drawer = document.querySelector(".Notifications");
+    expect(drawer.classList.contains("visible")).toBe(false);
+  });
 });

@@ -1,85 +1,43 @@
-import { memo, useRef } from 'react';
-import { StyleSheet, css } from 'aphrodite';
-import { useSelector, useDispatch, shallowEqual } from 'react-redux';
-import closeIcon from '../../assets/close-icon.png';
-import NotificationItem from '../NotificationItem/NotificationItem';
+import { memo, useEffect, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import closeIcon from "../../assets/close-icon.png";
+import NotificationItem from "../NotificationItem/NotificationItem";
 import {
+  fetchNotifications,
   markNotificationAsRead,
-} from '../../features/notifications/notificationsSlice';
-
-const styles = StyleSheet.create({
-  notificationTitle: {
-    float: 'right',
-    position: 'absolute',
-    right: '10px',
-    top: '2px',
-    cursor: 'pointer',
-  },
-  notifications: {
-    border: 'dotted',
-    borderColor: 'crimson',
-    marginTop: '1%',
-    paddingLeft: '1rem',
-    marginBottom: '1rem',
-    width: '40%',
-    marginLeft: '59%',
-    opacity: 1,
-    visibility: 'visible',
-  },
-  notificationsButton: {
-    position: 'absolute',
-    cursor: 'pointer',
-    right: '5px',
-    top: '20px',
-    background: 'transparent',
-    border: 'none',
-  },
-  notificationTypeDefault: {
-    color: 'blue',
-  },
-  notificationTypeUrgent: {
-    color: 'red',
-  },
-  menuItem: {
-    textAlign: 'right',
-  },
-  visible: {
-    opacity: 0,
-    visibility: 'hidden',
-  },
-});
+} from "../../features/notifications/notificationsSlice";
+import "./Notifications.css";
 
 const Notifications = memo(function Notifications() {
   const dispatch = useDispatch();
-  const notifications = useSelector((state) => state.notifications.notifications, shallowEqual);
-  const notificationsRef = useRef();
+  const notifications = useSelector(
+    (state) => state.notifications.notifications
+  );
+
+  const drawerRef = useRef(null);
+
+  useEffect(() => {
+    dispatch(fetchNotifications());
+  }, [dispatch]);
 
   const handleToggleDrawer = () => {
-    if (notificationsRef.current) {
-      notificationsRef.current.classList.toggle(css(styles.visible));
-    }
+    drawerRef.current.classList.toggle("visible");
   };
 
   const handleMarkAsRead = (id) => dispatch(markNotificationAsRead(id));
 
+  console.log("Notifications render");
+
   return (
     <>
-      <div
-        className={css(styles.notificationTitle)}
-        onClick={handleToggleDrawer}
-        style={{ cursor: 'pointer' }}
-      >
+      <div onClick={handleToggleDrawer} style={{ cursor: "pointer" }}>
         Your notifications
       </div>
-      <div ref={notificationsRef} className={css(styles.notifications)}>
+      <div className="Notifications visible" ref={drawerRef}>
         {notifications.length > 0 ? (
           <>
             <p>Here is the list of notifications</p>
-            <button
-              onClick={handleToggleDrawer}
-              aria-label="Close"
-              className={css(styles.notificationsButton)}
-            >
+            <button onClick={handleToggleDrawer} aria-label="Close">
               <img src={closeIcon} alt="close icon" />
             </button>
             <ul>
@@ -91,15 +49,6 @@ const Notifications = memo(function Notifications() {
                   value={notification.value}
                   html={notification.html}
                   markAsRead={() => handleMarkAsRead(notification.id)}
-                  className={
-                    notification.type === 'urgent'
-                      ? css(
-                        styles.notificationTypeUrgent
-                      )
-                      : css(
-                        styles.notificationTypeDefault
-                      )
-                  }
                 />
               ))}
             </ul>
