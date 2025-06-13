@@ -5,7 +5,6 @@ import axios from 'axios';
 
 const initialState = {
   notifications: [],
-  displayDrawer: true,
 };
 
 const API_BASE_URL = 'http://localhost:5173';
@@ -59,14 +58,7 @@ export const notificationsSlice = createSlice({
       state.notifications = state.notifications.filter(
         (notification) => notification.id !== id
       );
-
       console.log(`Notification ${id} has been marked as read`);
-    },
-    hideDrawer: (state) => {
-      state.displayDrawer = false;
-    },
-    showDrawer: (state) => {
-      state.displayDrawer = true;
     },
   },
   extraReducers: (builder) => {

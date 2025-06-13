@@ -1,12 +1,10 @@
-import { memo } from 'react';
+import { memo, useRef } from 'react';
 import { StyleSheet, css } from 'aphrodite';
 import { useSelector, useDispatch, shallowEqual } from 'react-redux';
 import closeIcon from '../../assets/close-icon.png';
 import NotificationItem from '../NotificationItem/NotificationItem';
 import {
   markNotificationAsRead,
-  hideDrawer,
-  showDrawer,
 } from '../../features/notifications/notificationsSlice';
 
 const styles = StyleSheet.create({
@@ -25,6 +23,8 @@ const styles = StyleSheet.create({
     marginBottom: '1rem',
     width: '40%',
     marginLeft: '59%',
+    opacity: 1,
+    visibility: 'visible',
   },
   notificationsButton: {
     position: 'absolute',
@@ -43,6 +43,12 @@ const styles = StyleSheet.create({
   menuItem: {
     textAlign: 'right',
   },
+  visible: {
+    opacity: 0,
+    visibility: 'hidden',
+    height: 0,
+    overflow: 'hidden',
+  },
 });
 
 const Notifications = memo(function Notifications() {
@@ -53,62 +59,61 @@ const Notifications = memo(function Notifications() {
     shallowEqual
   );
 
-  const displayDrawer = useSelector(
-    (state) => state.notifications.displayDrawer
-  );
+  const notificationsRef = useRef();
 
-  const handleDisplayDrawer = () => dispatch(showDrawer());
-  const handleHideDrawer = () => dispatch(hideDrawer());
+  const handleToggleDrawer = () => {
+    if (notificationsRef.current) {
+      notificationsRef.current.classList.toggle(css(styles.visible));
+    }
+  }
   const handleMarkAsRead = (id) => dispatch(markNotificationAsRead(id));
 
   return (
     <>
       <div
         className={css(styles.notificationTitle)}
-        onClick={handleDisplayDrawer}
+        onClick={handleToggleDrawer}
         style={{ cursor: 'pointer' }}
       >
         Your notifications
       </div>
-      {displayDrawer && (
-        <div className={css(styles.notifications)}>
-          {notifications.length > 0 ? (
-            <>
-              <p>Here is the list of notifications</p>
-              <button
-                onClick={handleHideDrawer}
-                aria-label="Close"
-                className={css(styles.notificationsButton)}
-              >
-                <img src={closeIcon} alt="close icon" />
-              </button>
-              <ul>
-                {notifications.map((notification) => (
-                  <NotificationItem
-                    key={notification.id}
-                    id={notification.id}
-                    type={notification.type}
-                    value={notification.value}
-                    html={notification.html}
-                    markAsRead={() => handleMarkAsRead(notification.id)}
-                    className={
-                      notification.type === 'urgent'
-                        ? css(
-                          styles.notificationTypeUrgent
-                        )
-                        : css(
-                          styles.notificationTypeDefault
-                        )
-                    }
-                  />
-                ))}
-              </ul>
-            </>
-          ) : (
-            <p>No new notifications for now</p>
-          )}
-        </div>
-      )}
+      <div ref={notificationsRef} className={css(styles.notifications)}>
+        {notifications.length > 0 ? (
+          <>
+            <p>Here is the list of notifications</p>
+            <button
+              onClick={handleToggleDrawer}
+              aria-label="Close"
+              className={css(styles.notificationsButton)}
+            >
+              <img src={closeIcon} alt="close icon" />
+            </button>
+            <ul>
+              {notifications.map((notification) => (
+                <NotificationItem
+                  key={notification.id}
+                  id={notification.id}
+                  type={notification.type}
+                  value={notification.value}
+                  html={notification.html}
+                  markAsRead={() => handleMarkAsRead(notification.id)}
+                  className={
+                    notification.type === 'urgent'
+                      ? css(
+                        styles.notificationTypeUrgent
+                      )
+                      : css(
+                        styles.notificationTypeDefault
+                      )
+                  }
+                />
+              ))}
+            </ul>
+          </>
+        ) : (
+          <p>No new notifications for now</p>
+        )}
+      </div>
     </>
   );
 });

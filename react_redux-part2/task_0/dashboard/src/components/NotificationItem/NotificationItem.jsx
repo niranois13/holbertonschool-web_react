@@ -1,37 +1,12 @@
 import { memo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { markNotificationAsRead } from '../../features/notifications/notificationsSlice';
-import { useRef, useEffect } from 'react';
-import { createSelector } from 'reselect';
-
-
-const selectNotificationByIdCache = {};
-
-function getSelectNotificationById(id) {
-    if (!selectNotificationByIdCache[id]) {
-        selectNotificationByIdCache[id] = createSelector(
-            (state) => state.notifications.notifications,
-            (notifications) => notifications.find((notif) => notif.id === id)
-        );
-    }
-    return selectNotificationByIdCache[id];
-}
 
 const NotificationItem = memo(function NotificationItem({ id }) {
     const dispatch = useDispatch();
-
-    const renderCountRef = useRef(0);
-    useEffect(() => {
-        renderCountRef.current += 1;
-
-        console.groupCollapsed(`🔄 NotificationItem Render #${renderCountRef.current}`);
-        console.log('Props - id:', id);
-        console.log('Notification:', notification);
-        console.groupEnd();
-    });
-
-    const selectNotification = getSelectNotificationById(id);
-    const notification = useSelector(selectNotification);
+    const notification = useSelector((state) =>
+        state.notifications.notifications.find((notif) => notif.id === id)
+    );
     if (!notification)
         return null;
 
