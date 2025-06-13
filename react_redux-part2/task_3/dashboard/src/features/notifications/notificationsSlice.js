@@ -18,14 +18,14 @@ export const fetchNotifications = createAsyncThunk(
     try {
       const response = await axios.get(ENDPOINTS.notifications);
       const rawNotifications = response.data || [];
-
+      
       const transformedNotifications = rawNotifications
         .filter(notification => notification.context?.isRead === false)
         .map(notification => ({
           id: notification.id,
-          type: notification.context.type,
-          isRead: notification.context.isRead,
-          value: notification.context.value
+          type: notification.context?.type,
+          isRead: notification.context?.isRead,
+          value: notification.context?.value,
         }));
 
       return transformedNotifications;

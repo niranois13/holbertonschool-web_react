@@ -24,12 +24,12 @@ describe("Notifications Component", () => {
     });
 
     // Mock the selector to just filter the notifications based on the filter argument
-    jest.spyOn(selectors, "getFilteredNotifications").mockImplementation(
-      (state, filter) => {
+    jest.spyOn(selectors, "makeGetFilteredNotifications").mockImplementation(() => {
+      return jest.fn((state, filter) => {
         if (filter === "all") return sampleNotifications;
         return sampleNotifications.filter((n) => n.type === filter);
-      }
-    );
+      });
+    });
 
     // Mock fetchNotifications thunk action creator to a dummy action
     jest.spyOn(notificationsSlice, "fetchNotifications").mockReturnValue({
@@ -83,7 +83,9 @@ describe("Notifications Component", () => {
       },
     });
 
-    jest.spyOn(selectors, "getFilteredNotifications").mockReturnValue([]);
+    jest.spyOn(selectors, "makeGetFilteredNotifications").mockImplementation(() => {
+      return jest.fn(() => []);
+    });
 
     render(
       <Provider store={store}>
