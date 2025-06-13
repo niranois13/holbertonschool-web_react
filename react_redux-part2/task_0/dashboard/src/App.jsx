@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { login, logout } from './features/auth/authSlice';
 import { fetchCourses } from './features/courses/coursesSlice';
@@ -12,8 +12,6 @@ import BodySection from './components/BodySection/BodySection';
 import {
     fetchNotifications,
     markNotificationAsRead,
-    hideDrawer,
-    showDrawer,
 } from './features/notifications/notificationsSlice';
 
 export default function App() {
@@ -22,7 +20,6 @@ export default function App() {
     const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
     const courses = useSelector((state) => state.courses.courses);
     const notifications = useSelector((state) => state.notifications.notifications);
-    const displayDrawer = useSelector((state) => state.notifications.displayDrawer);
 
     useEffect(() => {
         dispatch(fetchNotifications());
@@ -33,14 +30,6 @@ export default function App() {
             dispatch(fetchCourses());
         }
     }, [isLoggedIn, dispatch]);
-
-    const handleDisplayDrawer = useCallback(() => {
-        dispatch(showDrawer());
-    }, [dispatch]);
-
-    const handleHideDrawer = useCallback(() => {
-        dispatch(hideDrawer());
-    }, [dispatch]);
 
     const logIn = (email, password) => {
         dispatch(login({ email, password }));
@@ -54,9 +43,6 @@ export default function App() {
         <>
             <Notifications
                 notifications={notifications}
-                handleHideDrawer={handleHideDrawer}
-                handleDisplayDrawer={handleDisplayDrawer}
-                displayDrawer={displayDrawer}
                 markNotificationAsRead={
                     (id) => dispatch(markNotificationAsRead(id))
                 }

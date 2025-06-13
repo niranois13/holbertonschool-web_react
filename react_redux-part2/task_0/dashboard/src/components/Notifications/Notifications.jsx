@@ -46,8 +46,6 @@ const styles = StyleSheet.create({
   visible: {
     opacity: 0,
     visibility: 'hidden',
-    height: 0,
-    overflow: 'hidden',
   },
 });
 
