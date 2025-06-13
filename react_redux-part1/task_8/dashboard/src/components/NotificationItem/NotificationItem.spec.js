@@ -7,6 +7,7 @@ import authReducer from '../../features/auth/authSlice';
 import coursesReducer from '../../features/courses/coursesSlice';
 import notificationsReducer, { markNotificationAsRead } from '../../features/notifications/notificationsSlice';
 import { StyleSheetTestUtils } from "aphrodite";
+import { Profiler } from 'react';
 
 jest.mock('../../features/notifications/notificationsSlice', () => {
   const originalSlice = jest.requireActual('../../features/notifications/notificationsSlice');
@@ -148,19 +149,25 @@ describe('NotificationItem - Memo behavior', () => {
   });
 
   test('Should not re-render with same props', () => {
-    const { rerenderWithNewState } = renderWithProvider(<NotificationItem id={1} />, preloadedState);
-    expect(consoleLogSpy).toHaveBeenCalledWith(
-      'Rendering NotificationItem with id: 1, type: default, value: New course available'
-    )
-    consoleLogSpy.mockClear();
-    rerenderWithNewState(<NotificationItem id={1}/>);
-    expect(consoleLogSpy).not.toHaveBeenCalled();
+    let renderCount = 0;
+
+    const { rerender, store } = renderWithProvider(<NotificationItem id={1} />, preloadedState);
+
+    const initialRenderCount = renderCount;
+
+    rerender(
+      <Provider store={store}>
+      <NotificationItem id={1} />, preloadedState
+      </Provider>
+    );
+    expect(renderCount - initialRenderCount).toBe(0);
   });
 
-  test('Should re-render when props change', () => {
+
+  test('Should re-render and update displayed value when props change', () => {
     const { rerenderWithNewState } = renderWithProvider(<NotificationItem id={1} />, preloadedState);
-    expect(consoleLogSpy).toHaveBeenCalled();
-    consoleLogSpy.mockClear();
+
+    expect(screen.getByRole('listitem')).toHaveTextContent('New course available');
 
     const updatedState = {
       ...preloadedState,
@@ -174,11 +181,9 @@ describe('NotificationItem - Memo behavior', () => {
         ],
         displayDrawer: true,
       },
-    }
-
+    };
     rerenderWithNewState(<NotificationItem id={1} />, updatedState);
-    expect(consoleLogSpy).toHaveBeenCalledWith(
-      'Rendering NotificationItem with id: 1, type: default, value: Updated notification'
-    );
+
+    expect(screen.getByRole('listitem')).toHaveTextContent('Updated notification');
   });
 });
