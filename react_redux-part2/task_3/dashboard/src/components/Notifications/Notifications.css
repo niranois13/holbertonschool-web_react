@@ -1,0 +1,16 @@
+.Notifications {
+    border: dotted crimson;
+    margin-top: 1%;
+    padding-left: 1rem;
+    margin-bottom: 1rem;
+    width: 40%;
+    margin-left: 59%;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.Notifications.visible {
+    opacity: 1;
+    visibility: visible;
+}
